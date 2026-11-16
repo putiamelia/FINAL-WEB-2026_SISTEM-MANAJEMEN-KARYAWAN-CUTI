@@ -3,13 +3,28 @@ const path = require('path');
 const { Client } = require('pg');
 
 async function main() {
-  const config = {
+  let config = {
     host: process.env.PGHOST || 'localhost',
-    port: parseInt(process.env.PGPORT || '5433', 10),
+    port: parseInt(process.env.PGPORT || '5432', 10),
     user: process.env.PGUSER || 'postgres',
     password: process.env.PGPASSWORD || '',
     database: process.env.PGDATABASE || 'postgres',
   };
+
+  if (process.env.DATABASE_URL) {
+    try {
+      const u = new URL(process.env.DATABASE_URL);
+      config = {
+        host: u.hostname || 'localhost',
+        port: parseInt(u.port || '5432', 10),
+        user: decodeURIComponent(u.username || 'postgres'),
+        password: decodeURIComponent(u.password || ''),
+        database: u.pathname ? u.pathname.replace(/^\//, '') : 'postgres',
+      };
+    } catch (e) {
+      console.warn('Could not parse DATABASE_URL, using default config:', e.message);
+    }
+  }
 
   console.log(`Connecting to PostgreSQL at ${config.host}:${config.port} as ${config.user}...`);
   const adminClient = new Client(config);
