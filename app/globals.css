@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --navy-900: #0B2545;
+  --navy-700: #13315C;
+  --navy-600: #17386B;
+  --gold-500: #C8A24A;
+  --gold-300: #E3C06D;
+  --bg-page: #F1F3F6;
+  --bg-cream: #FBFAF7;
+  --surface: #FFFFFF;
+  --border: #D9DEE5;
+  --border-soft: #E6EAF0;
+  --table-head: #EEF1F5;
+  --text: #1B2430;
+  --text-muted: #4A5565;
+  --text-body: #334155;
+  --sidebar-muted: #C9D3E3;
+  --sidebar-label: #9FB0CC;
+  --radius-card: 6px;
+  --radius-ctl: 4px;
+}
+
+body {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom banking tokens & component styles */
+.btn-primary {
+  background-color: #13315C;
+  color: #FFFFFF;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 0.5rem 1.25rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 150ms ease;
+  cursor: pointer;
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: #0B2545;
+}
+.btn-primary:focus-visible {
+  outline: 2px solid #13315C;
+  outline-offset: 2px;
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: #FFFFFF;
+  color: #13315C;
+  border: 1px solid #13315C;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 0.5rem 1.25rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 150ms ease;
+  cursor: pointer;
+}
+.btn-secondary:hover:not(:disabled) {
+  background-color: #F1F3F6;
+}
+.btn-secondary:focus-visible {
+  outline: 2px solid #13315C;
+  outline-offset: 2px;
+}
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  background-color: #FFFFFF;
+  color: #991B1B;
+  border: 1px solid #991B1B;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 0.5rem 1.25rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 150ms ease;
+  cursor: pointer;
+}
+.btn-danger:hover:not(:disabled) {
+  background-color: #FEE2E2;
+}
+.btn-danger:focus-visible {
+  outline: 2px solid #991B1B;
+  outline-offset: 2px;
+}
+.btn-danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.input-field {
+  height: 44px;
+  border: 1px solid #D9DEE5;
+  border-radius: 4px;
+  padding: 0 0.875rem;
+  font-size: 0.875rem;
+  color: #1B2430;
+  background-color: #FFFFFF;
+  width: 100%;
+  transition: border-color 150ms ease;
+}
+.input-field:focus {
+  outline: none;
+  border-color: #13315C;
+  box-shadow: 0 0 0 1px #13315C;
+}
+.input-field:read-only {
+  background-color: #F8FAFC;
+  color: #64748B;
+  cursor: not-allowed;
+}
+
+.table-header {
+  background-color: #EEF1F5;
+  color: #1B2430;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.75rem 1rem;
+}
+
+.table-cell {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  border-bottom: 1px solid #E6EAF0;
+  white-space: nowrap;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  background-color: rgba(11, 37, 69, 0.45);
+  backdrop-filter: blur(2px);
+}
