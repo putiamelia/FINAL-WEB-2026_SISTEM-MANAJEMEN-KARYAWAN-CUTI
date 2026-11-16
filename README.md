@@ -4,8 +4,7 @@
 Sistem manajemen cuti modern dan terintegrasi untuk Insan Bank Nusantara. Dibangun menggunakan arsitektur **Next.js (App Router)** dan basis data relasional **PostgreSQL** dengan kueri **Raw SQL (pg)** tanpa ORM sesuai dengan standar teknis pengujian praktikum.
 
 ---
-
-## 🏛️ Fitur Utama Sistem
+Fitur Utama Sistem
 
 ### 1. Multi-Role & Hak Akses Berjenjang (RBAC)
 Sistem memiliki 4 peran pengguna dengan tampilan, kewenangan, dan menu navigasi yang disesuaikan:
@@ -26,8 +25,7 @@ Sistem memiliki 4 peran pengguna dengan tampilan, kewenangan, dan menu navigasi 
 - **Ekspor Dokumen PDF:** Cetak Surat Izin Cuti Resmi berlogo Bank Nusantara dengan generator PDF bawaan (`jspdf`).
 
 ---
-
-## 🛠️ Arsitektur & Teknologi
+Arsitektur & Teknologi
 
 - **Frontend & Backend:** Next.js 16 (App Router, Server Components & Route Handlers)
 - **Styling & Design Tokens:** Tailwind CSS (Navy `#0B2545`, Slate `#13315C`, Gold `#C8A24A`, Cream `#FBFAF7`)
@@ -37,8 +35,7 @@ Sistem memiliki 4 peran pengguna dengan tampilan, kewenangan, dan menu navigasi 
 - **Ekspor PDF:** jsPDF
 
 ---
-
-## 📂 Struktur Direktori
+Struktur Direktori
 
 ```text
 ├── app/
@@ -64,7 +61,7 @@ Sistem memiliki 4 peran pengguna dengan tampilan, kewenangan, dan menu navigasi 
 
 ---
 
-## 🚀 Panduan Instalasi & Menjalankan
+Panduan Instalasi & Menjalankan
 
 ### Langkah 1: Siapkan Basis Data di pgAdmin 4 / PostgreSQL
 
@@ -106,21 +103,20 @@ npm run dev
 Buka peramban (browser) di alamat: `http://localhost:3000`
 
 ---
-
-## 👥 Akun Demo Pengujian
+Akun Demo Pengujian
 
 Halaman login telah dilengkapi tombol **Akses Cepat Pengujian** untuk memudahkan evaluator menguji sistem tanpa mengetik kredensial manual:
 
 | Peran | Username / Email | Kata Sandi | Nama Pegawai | Divisi |
 |---|---|---|---|---|
-| **Karyawan** | `rina.maharani` | `password123` | Rina Maharani | Operasional & Layanan Nasabah |
-| **Ketua Divisi** | `bagus.santoso` | `password123` | Bagus Santoso | Operasional & Layanan Nasabah |
-| **HRD** | `hrd.maya` | `password123` | Maya Kusuma | Human Resources |
+| **Karyawan** | `karis.kabanga` | `password123` | Karis Katanga | Operasional & Layanan Nasabah |
+| **Ketua Divisi** | `dylan.dwiputra` | `password123` | Dylan Dwiputra | Operasional & Layanan Nasabah |
+| **HRD** | `puti.amelia` | `password123` | Puti Amelia | Human Resources |
 | **Admin** | `admin` | `password123` | Administrator Sistem | Divisi Teknologi Informasi |
 
 ---
 
-## 📝 Catatan Tambahan Praktikum
+Catatan Tambahan Praktikum
 
 - Berkas SQL utama disimpan di luar direktori `/app` (`database.sql` dan `schema.sql`) sesuai ketentuan penilaian praktikum.
 - Format penulisan angka desimal cuti mengikuti standar perbankan Indonesia dengan koma (misal: `7,5 hari`, `0,5 hari`).
