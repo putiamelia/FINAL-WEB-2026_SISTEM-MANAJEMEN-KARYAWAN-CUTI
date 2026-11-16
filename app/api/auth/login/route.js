@@ -80,8 +80,22 @@ export async function POST(request) {
     return response;
   } catch (err) {
     console.error('Login error:', err);
+    let errorMessage = err.message;
+
+    if (err.message.includes('SCRAM-SERVER-FIRST-MESSAGE') || err.message.includes('client password must be a string')) {
+      errorMessage = 'Kata sandi database PostgreSQL belum diisi di file .env.local (PGPASSWORD masih kosong). Silakan buka file .env.local dan masukkan password PostgreSQL / pgAdmin Anda.';
+    } else if (err.message.includes('password authentication failed')) {
+      errorMessage = 'Kata sandi PostgreSQL di file .env.local salah. Silakan sesuaikan PGPASSWORD di file .env.local dengan password akun postgres Anda di pgAdmin.';
+    } else if (err.message.includes('does not exist') && err.message.includes('database')) {
+      errorMessage = 'Database "db_cuti_karyawan" belum dibuat di pgAdmin. Buka pgAdmin, buat database "db_cuti_karyawan", lalu jalankan database.sql.';
+    } else if (err.message.includes('relation "users" does not exist')) {
+      errorMessage = 'Tabel database belum dibuat. Silakan buka database.sql di pgAdmin (Query Tool) pada database db_cuti_karyawan, lalu klik Execute (F5).';
+    } else if (err.message.includes('ECONNREFUSED')) {
+      errorMessage = 'Tidak dapat terhubung ke PostgreSQL. Pastikan service PostgreSQL sudah berjalan di port yang sesuai (5432 atau 5433).';
+    }
+
     return NextResponse.json(
-      { error: 'Terjadi kesalahan internal server: ' + err.message },
+      { error: errorMessage },
       { status: 500 }
     );
   }
