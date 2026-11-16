@@ -90,6 +90,7 @@ export default function AdminPenggunaPage() {
       nomor_telepon: '',
       alamat: '',
       status_aktif: true,
+      foto_profil: '/assets/foto-karyawan.png',
     });
     setModalOpen(true);
   }
@@ -110,6 +111,7 @@ export default function AdminPenggunaPage() {
       nomor_telepon: user.nomor_telepon || '',
       alamat: user.alamat || '',
       status_aktif: user.status_aktif,
+      foto_profil: user.foto_profil || '/assets/foto-karyawan.png',
     });
     setModalOpen(true);
   }
@@ -383,6 +385,70 @@ export default function AdminPenggunaPage() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+              {/* Pilihan & Unggah Foto Profil */}
+              <div className="flex items-center gap-4 p-3 bg-gray-50 rounded border border-[#D9DEE5]">
+                <img
+                  src={formData.foto_profil || '/assets/foto-karyawan.png'}
+                  alt="Foto Profil"
+                  className="w-14 h-14 rounded-full object-cover border-2 border-[#13315C]"
+                />
+                <div className="flex-1 space-y-1.5">
+                  <label className="block text-[11px] font-bold text-[#0B2545] uppercase tracking-wider">
+                    Foto Profil Pegawai
+                  </label>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, foto_profil: '/assets/foto-karyawan.png' })}
+                      className={`px-2.5 py-1 rounded text-[11px] font-medium border transition-colors ${
+                        formData.foto_profil === '/assets/foto-karyawan.png'
+                          ? 'bg-[#0B2545] text-white border-[#0B2545]'
+                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
+                      }`}
+                    >
+                      Pria (Jas)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, foto_profil: '/assets/foto-karyawati.png' })}
+                      className={`px-2.5 py-1 rounded text-[11px] font-medium border transition-colors ${
+                        formData.foto_profil === '/assets/foto-karyawati.png'
+                          ? 'bg-[#0B2545] text-white border-[#0B2545]'
+                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
+                      }`}
+                    >
+                      Wanita (Hijab)
+                    </button>
+                    <label className="cursor-pointer px-2.5 py-1 rounded text-[11px] font-medium bg-white text-[#13315C] border border-[#13315C] hover:bg-blue-50 transition-colors">
+                      <span>Unggah Foto Baru</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          const upData = new FormData();
+                          upData.append('file', file);
+                          if (formData.id) upData.append('user_id', formData.id);
+                          try {
+                            const res = await fetch('/api/user/upload-avatar', { method: 'POST', body: upData });
+                            const result = await res.json();
+                            if (res.ok) {
+                              setFormData({ ...formData, foto_profil: result.url });
+                            } else {
+                              alert(result.error || 'Gagal mengunggah foto');
+                            }
+                          } catch (err) {
+                            alert('Gagal mengunggah foto');
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-[#1B2430] uppercase mb-1">

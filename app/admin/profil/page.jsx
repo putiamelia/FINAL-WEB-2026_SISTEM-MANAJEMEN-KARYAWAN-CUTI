@@ -70,6 +70,26 @@ export default function ProfilAdminPage() {
     }
   }
 
+  async function handleUploadAvatar(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const data = new FormData();
+    data.append('file', file);
+    try {
+      const res = await fetch('/api/user/upload-avatar', { method: 'POST', body: data });
+      const result = await res.json();
+      if (res.ok) {
+        setProfile((prev) => ({ ...prev, foto_profil: result.url }));
+        setToast('Foto profil berhasil diperbarui.');
+        setTimeout(() => setToast(''), 4000);
+      } else {
+        setError(result.error || 'Gagal mengunggah foto.');
+      }
+    } catch (err) {
+      setError('Gagal mengunggah foto profil.');
+    }
+  }
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -105,8 +125,21 @@ export default function ProfilAdminPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Kartu Info Akun */}
           <div className="bg-white rounded-lg border border-gray-200 p-6 flex flex-col items-center text-center shadow-sm">
-            <div className="w-20 h-20 rounded-full bg-[#0B2545] text-[#C8A24A] font-bold text-2xl flex items-center justify-center mb-4 shadow">
-              {profile?.nama_lengkap?.charAt(0) || 'A'}
+            <div className="relative w-20 h-20 mx-auto mb-4 group cursor-pointer">
+              <img
+                src={profile?.foto_profil || '/assets/foto-karyawan.png'}
+                alt={profile?.nama_lengkap || 'Admin'}
+                className="w-20 h-20 rounded-full object-cover border-2 border-[#13315C] shadow"
+              />
+              <label className="absolute inset-0 bg-black/50 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white text-[10px] font-semibold">
+                <span>Ganti Foto</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleUploadAvatar}
+                />
+              </label>
             </div>
             <h2 className="text-base font-bold text-[#0B2545]">{profile?.nama_lengkap}</h2>
             <div className="text-xs text-gray-500 font-mono mt-0.5">NIP: {profile?.nip || '-'}</div>

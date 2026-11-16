@@ -38,7 +38,7 @@ export async function PUT(request) {
     if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await request.json();
-    const { nama_lengkap, nomor_telepon, alamat, password } = body;
+    const { nama_lengkap, nomor_telepon, alamat, password, foto_profil } = body;
 
     if (!nama_lengkap) {
       return NextResponse.json({ error: 'Nama lengkap wajib diisi.' }, { status: 400 });
@@ -49,6 +49,11 @@ export async function PUT(request) {
       SET nama_lengkap = $1, nomor_telepon = $2, alamat = $3, updated_at = CURRENT_TIMESTAMP
     `;
     const params = [nama_lengkap.trim(), nomor_telepon || null, alamat || null];
+
+    if (foto_profil !== undefined) {
+      params.push(foto_profil);
+      sql += `, foto_profil = $${params.length}`;
+    }
 
     if (password && password.trim() !== '') {
       params.push(hashPassword(password));

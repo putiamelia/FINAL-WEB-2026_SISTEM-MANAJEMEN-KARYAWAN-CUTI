@@ -71,6 +71,26 @@ export default function ProfilKaryawanPage() {
     }
   }
 
+  async function handleUploadAvatar(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const data = new FormData();
+    data.append('file', file);
+    try {
+      const res = await fetch('/api/user/upload-avatar', { method: 'POST', body: data });
+      const result = await res.json();
+      if (res.ok) {
+        setProfile((prev) => ({ ...prev, foto_profil: result.url }));
+        setToast('Foto profil berhasil diperbarui.');
+        setTimeout(() => setToast(''), 4000);
+      } else {
+        setError(result.error || 'Gagal mengunggah foto.');
+      }
+    } catch (err) {
+      setError('Gagal mengunggah foto profil.');
+    }
+  }
+
   const sisa = profile ? parseFloat(profile.sisa_kuota_tahunan) : 7.5;
   const awal = profile ? parseFloat(profile.kuota_tahunan_awal) : 12.0;
   const terpakai = profile ? parseFloat(profile.kuota_terpakai) : 4.5;
@@ -110,11 +130,22 @@ export default function ProfilKaryawanPage() {
         {/* Kolom Kiri: Kartu Ringkasan Akun & Kuota (4 Kolom) */}
         <div className="lg:col-span-4 space-y-6">
           <div className="bg-white rounded-md border border-[#D9DEE5] p-6 text-center shadow-sm">
-            <img
-              src={profile?.foto_profil || '/assets/foto-karyawati.png'}
-              alt={profile?.nama_lengkap || 'Karyawan'}
-              className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-[#13315C] shadow-sm mb-4"
-            />
+            <div className="relative w-24 h-24 mx-auto mb-4 group cursor-pointer">
+              <img
+                src={profile?.foto_profil || '/assets/foto-karyawati.png'}
+                alt={profile?.nama_lengkap || 'Karyawan'}
+                className="w-24 h-24 rounded-full object-cover border-2 border-[#13315C] shadow-sm"
+              />
+              <label className="absolute inset-0 bg-black/50 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white text-[10px] font-semibold">
+                <span>Ganti Foto</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleUploadAvatar}
+                />
+              </label>
+            </div>
             <h2 className="text-lg font-bold text-[#0B2545]">{profile?.nama_lengkap}</h2>
             <p className="text-xs text-[#4A5565]">{profile?.jabatan} &bull; {profile?.nama_divisi || 'Layanan Nasabah'}</p>
             <span className="inline-block mt-2 px-3 py-1 bg-[#DBEAFE] text-[#1E3A8A] text-xs font-semibold rounded">

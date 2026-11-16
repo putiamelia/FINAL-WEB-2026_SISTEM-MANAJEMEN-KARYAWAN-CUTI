@@ -81,6 +81,7 @@ export async function POST(request) {
       nomor_telepon,
       alamat,
       tanggal_bergabung,
+      foto_profil = '/assets/foto-karyawan.png',
     } = body;
 
     if (!username || !email || !password || !nama_lengkap || !role) {
@@ -103,9 +104,9 @@ export async function POST(request) {
       `INSERT INTO users (
          username, email, password_hash, nama_lengkap, role, jabatan,
          divisi_id, kuota_tahunan_awal, sisa_kuota_tahunan, kuota_terpakai,
-         nomor_telepon, alamat, status_aktif, tanggal_bergabung
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $8, 0, $9, $10, TRUE, $11)
-       RETURNING id, username, email, nama_lengkap, role`,
+         nomor_telepon, alamat, status_aktif, tanggal_bergabung, foto_profil
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $8, 0, $9, $10, TRUE, $11, $12)
+       RETURNING id, username, email, nama_lengkap, role, foto_profil`,
       [
         username.trim(),
         email.trim(),
@@ -118,6 +119,7 @@ export async function POST(request) {
         nomor_telepon || null,
         alamat || null,
         tanggal_bergabung || new Date().toISOString().slice(0, 10),
+        foto_profil || '/assets/foto-karyawan.png',
       ]
     );
 
@@ -153,6 +155,7 @@ export async function PUT(request) {
       status_aktif,
       nomor_telepon,
       alamat,
+      foto_profil,
     } = body;
 
     if (!id || !username || !email || !nama_lengkap || !role) {
@@ -186,13 +189,18 @@ export async function PUT(request) {
       alamat || null,
     ];
 
+    if (foto_profil !== undefined) {
+      params.push(foto_profil);
+      updateSql += `, foto_profil = $${params.length}`;
+    }
+
     if (password && password.trim() !== '') {
       params.push(hashPassword(password));
       updateSql += `, password_hash = $${params.length}`;
     }
 
     params.push(id);
-    updateSql += ` WHERE id = $${params.length} RETURNING id, username, email, nama_lengkap, role`;
+    updateSql += ` WHERE id = $${params.length} RETURNING id, username, email, nama_lengkap, role, foto_profil`;
 
     const res = await query(updateSql, params);
     return NextResponse.json({ message: 'Pengguna berhasil diperbarui.', user: res.rows[0] });
