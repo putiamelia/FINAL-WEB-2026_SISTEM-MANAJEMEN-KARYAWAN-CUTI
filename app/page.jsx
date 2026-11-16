@@ -6,7 +6,7 @@ import { CalendarCheck, ShieldCheck, Users, AlertCircle, ArrowRight } from 'luci
 
 export default function LoginPage() {
   const router = useRouter();
-  const [identifier, setIdentifier] = useState('rina.maharani');
+  const [identifier, setIdentifier] = useState('karis.kabanga');
   const [password, setPassword] = useState('password123');
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -223,27 +223,27 @@ export default function LoginPage() {
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <button
                   type="button"
-                  onClick={() => setQuickAccount('rina.maharani', 'password123')}
+                  onClick={() => setQuickAccount('karis.kabanga', 'password123')}
                   className="p-2 rounded text-left border border-[#D9DEE5] hover:bg-[#F1F3F6] transition-colors"
                 >
                   <span className="font-semibold text-[#13315C] block">Karyawan</span>
-                  <span className="text-[11px] text-[#4A5565]">rina.maharani</span>
+                  <span className="text-[11px] text-[#4A5565]">karis.kabanga</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => setQuickAccount('bagus.santoso', 'password123')}
+                  onClick={() => setQuickAccount('dylan.dwiputra', 'password123')}
                   className="p-2 rounded text-left border border-[#D9DEE5] hover:bg-[#F1F3F6] transition-colors"
                 >
                   <span className="font-semibold text-[#13315C] block">Ketua Divisi</span>
-                  <span className="text-[11px] text-[#4A5565]">bagus.santoso</span>
+                  <span className="text-[11px] text-[#4A5565]">dylan.dwiputra</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => setQuickAccount('maya.kusuma', 'password123')}
+                  onClick={() => setQuickAccount('puti.amelia', 'password123')}
                   className="p-2 rounded text-left border border-[#D9DEE5] hover:bg-[#F1F3F6] transition-colors"
                 >
                   <span className="font-semibold text-[#13315C] block">HRD</span>
-                  <span className="text-[11px] text-[#4A5565]">maya.kusuma</span>
+                  <span className="text-[11px] text-[#4A5565]">puti.amelia</span>
                 </button>
                 <button
                   type="button"

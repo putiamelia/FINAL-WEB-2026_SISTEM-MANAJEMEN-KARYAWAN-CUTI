@@ -157,7 +157,7 @@ CREATE TABLE notifications (
 -- ============================================================================
 -- SEED DATA AWAL (SESUAI DESIGN.MD DAN STANDAR BANK NUSANTARA)
 -- Password default semua akun adalah: "password123"
--- Hash bcrypt untuk "password123": $2a$10$wT282Wj1T.Fj1uR7FkWtseYf5hFwUeTf8GqLwA6fH5K4X2iXm5o0u
+-- Hash bcrypt untuk "password123": $2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe
 -- ============================================================================
 
 -- Data Pengaturan Sistem
@@ -201,26 +201,26 @@ INSERT INTO divisions (id, nama_divisi, deskripsi, tanggal_dibentuk) VALUES
 ALTER SEQUENCE divisions_id_seq RESTART WITH 8;
 
 -- Data Pengguna Utama (Admin, HRD, Ketua Divisi, Karyawan)
--- Hash: $2a$10$wT282Wj1T.Fj1uR7FkWtseYf5hFwUeTf8GqLwA6fH5K4X2iXm5o0u (password123)
+-- Hash: $2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe (password123)
 INSERT INTO users (id, username, email, password_hash, nama_lengkap, role, jabatan, divisi_id, kuota_tahunan_awal, sisa_kuota_tahunan, kuota_terpakai, nomor_telepon, alamat, status_aktif, tanggal_bergabung, foto_profil) VALUES
-(1, 'admin', 'admin@banknusantara.co.id', '$2a$10$wT282Wj1T.Fj1uR7FkWtseYf5hFwUeTf8GqLwA6fH5K4X2iXm5o0u', 'Hendri Wijaya', 'Admin', 'Sistem Administrator', 4, 12.0, 12.0, 0.0, '08123456001', 'Jl. Sudirman Kav. 21, Jakarta Pusat', TRUE, '2022-01-10', '/assets/foto-karyawan.png'),
-(2, 'maya.kusuma', 'hrd@banknusantara.co.id', '$2a$10$wT282Wj1T.Fj1uR7FkWtseYf5hFwUeTf8GqLwA6fH5K4X2iXm5o0u', 'Maya Kusuma', 'HRD', 'Human Resource Manager', 5, 12.0, 9.0, 3.0, '08123456002', 'Jl. Rasuna Said Blok B4, Jakarta Selatan', TRUE, '2021-03-01', '/assets/foto-karyawati.png'),
-(3, 'bagus.santoso', 'bagus.santoso@banknusantara.co.id', '$2a$10$wT282Wj1T.Fj1uR7FkWtseYf5hFwUeTf8GqLwA6fH5K4X2iXm5o0u', 'Bagus Santoso', 'Ketua Divisi', 'Head of Customer Service', 1, 12.0, 10.0, 2.0, '08123456003', 'Jl. Gatot Subroto No. 45, Jakarta Selatan', TRUE, '2020-05-15', '/assets/foto-karyawan.png'),
-(4, 'rina.maharani', 'rina.maharani@banknusantara.co.id', '$2a$10$wT282Wj1T.Fj1uR7FkWtseYf5hFwUeTf8GqLwA6fH5K4X2iXm5o0u', 'Rina Maharani', 'Karyawan', 'Customer Service Officer', 1, 12.0, 7.5, 4.5, '08123456004', 'Jl. Tebet Timur Dalam No. 12, Jakarta Selatan', TRUE, '2023-02-15', '/assets/foto-karyawati.png'),
-(5, 'yusuf.kurniawan', 'yusuf.kurniawan@banknusantara.co.id', '$2a$10$wT282Wj1T.Fj1uR7FkWtseYf5hFwUeTf8GqLwA6fH5K4X2iXm5o0u', 'Yusuf Kurniawan', 'Karyawan', 'Senior Customer Service', 1, 12.0, 8.0, 4.0, '08123456005', 'Jl. Duren Tiga No. 8, Jakarta Selatan', TRUE, '2022-08-01', '/assets/foto-karyawan.png'),
-(6, 'dewi.hartono', 'dewi.hartono@banknusantara.co.id', '$2a$10$wT282Wj1T.Fj1uR7FkWtseYf5hFwUeTf8GqLwA6fH5K4X2iXm5o0u', 'Dewi Hartono', 'Karyawan', 'Customer Care Representative', 1, 12.0, 11.0, 1.0, '08123456006', 'Jl. Bangka Raya No. 19, Jakarta Selatan', TRUE, '2024-01-10', '/assets/foto-karyawati.png'),
-(7, 'nadia.putri', 'nadia.putri@banknusantara.co.id', '$2a$10$wT282Wj1T.Fj1uR7FkWtseYf5hFwUeTf8GqLwA6fH5K4X2iXm5o0u', 'Nadia Putri', 'Karyawan', 'Front Office Staff', 1, 12.0, 6.0, 6.0, '08123456007', 'Jl. Fatmawati No. 30, Jakarta Selatan', TRUE, '2023-06-20', '/assets/foto-karyawati.png'),
-(8, 'andi.pratama', 'andi.pratama@banknusantara.co.id', '$2a$10$wT282Wj1T.Fj1uR7FkWtseYf5hFwUeTf8GqLwA6fH5K4X2iXm5o0u', 'Andi Pratama', 'Karyawan', 'Teller Service Officer', 1, 12.0, 12.0, 0.0, '08123456008', 'Jl. Kalibata No. 5, Jakarta Selatan', TRUE, '2024-03-01', '/assets/foto-karyawan.png'),
-(9, 'siti.wulandari', 'siti.wulandari@banknusantara.co.id', '$2a$10$wT282Wj1T.Fj1uR7FkWtseYf5hFwUeTf8GqLwA6fH5K4X2iXm5o0u', 'Siti Wulandari', 'Karyawan', 'Customer Relations Staff', 1, 12.0, 9.5, 2.5, '08123456009', 'Jl. Kemang Timur No. 14, Jakarta Selatan', TRUE, '2023-09-15', '/assets/foto-karyawati.png'),
-(10, 'anita.sari', 'anita.sari@banknusantara.co.id', '$2a$10$wT282Wj1T.Fj1uR7FkWtseYf5hFwUeTf8GqLwA6fH5K4X2iXm5o0u', 'Anita Sari', 'Ketua Divisi', 'Head of Credit Division', 2, 12.0, 8.0, 4.0, '08123456010', 'Jl. Bintaro Utama No. 88, Tangerang Selatan', TRUE, '2021-06-01', '/assets/foto-karyawati.png'),
-(11, 'bayu.setiawan', 'bayu.setiawan@banknusantara.co.id', '$2a$10$wT282Wj1T.Fj1uR7FkWtseYf5hFwUeTf8GqLwA6fH5K4X2iXm5o0u', 'Bayu Setiawan', 'Karyawan', 'Operations Specialist', 3, 12.0, 5.0, 7.0, '08123456011', 'Jl. Pramuka Raya No. 16, Jakarta Timur', TRUE, '2022-11-10', '/assets/foto-karyawan.png'),
-(12, 'laras.ayu', 'laras.ayu@banknusantara.co.id', '$2a$10$wT282Wj1T.Fj1uR7FkWtseYf5hFwUeTf8GqLwA6fH5K4X2iXm5o0u', 'Laras Ayu', 'Karyawan', 'Risk Analyst', 5, 12.0, 10.0, 2.0, '08123456012', 'Jl. Cilandak Barat No. 22, Jakarta Selatan', TRUE, '2023-04-12', '/assets/foto-karyawati.png'),
-(13, 'dimas.anggoro', 'dimas.anggoro@banknusantara.co.id', '$2a$10$wT282Wj1T.Fj1uR7FkWtseYf5hFwUeTf8GqLwA6fH5K4X2iXm5o0u', 'Dimas Anggoro', 'Karyawan', 'Junior IT Engineer', 4, 12.0, 12.0, 0.0, '08123456013', 'Jl. Margonda No. 100, Depok', TRUE, '2026-06-01', '/assets/foto-karyawan.png');
+(1, 'admin', 'admin@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Ahmad Mingyu', 'Admin', 'Sistem Administrator', 4, 12.0, 12.0, 0.0, '08123456001', 'Jl. Sudirman Kav. 21, Jakarta Pusat', TRUE, '2022-01-10', '/assets/foto-karyawan.png'),
+(2, 'puti.amelia', 'hrd@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Puti Amelia', 'HRD', 'Human Resource Manager', 5, 12.0, 9.0, 3.0, '08123456002', 'Jl. Rasuna Said Blok B4, Jakarta Selatan', TRUE, '2021-03-01', '/assets/foto-karyawati.png'),
+(3, 'dylan.dwiputra', 'dylan.dwiputra@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Dylan Dwiputra', 'Ketua Divisi', 'Head of Customer Service', 1, 12.0, 10.0, 2.0, '08123456003', 'Jl. Gatot Subroto No. 45, Jakarta Selatan', TRUE, '2020-05-15', '/assets/foto-karyawan.png'),
+(4, 'karis.kabanga', 'karis.kabanga@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Karis Kabanga', 'Karyawan', 'Customer Service Officer', 1, 12.0, 7.5, 4.5, '08123456004', 'Jl. Tebet Timur Dalam No. 12, Jakarta Selatan', TRUE, '2023-02-15', '/assets/foto-karyawati.png'),
+(5, 'andi.martin', 'andi.martin@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Andi Martin', 'Karyawan', 'Senior Customer Service', 1, 12.0, 8.0, 4.0, '08123456005', 'Jl. Duren Tiga No. 8, Jakarta Selatan', TRUE, '2022-08-01', '/assets/foto-karyawan.png'),
+(6, 'nur.aisyah', 'nur.aisyah@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Nur Aisyah', 'Karyawan', 'Customer Care Representative', 1, 12.0, 11.0, 1.0, '08123456006', 'Jl. Bangka Raya No. 19, Jakarta Selatan', TRUE, '2024-01-10', '/assets/foto-karyawati.png'),
+(7, 'alisya.nadhifa', 'alisya.nadhifa@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Alisya Nadhifa', 'Karyawan', 'Front Office Staff', 1, 12.0, 6.0, 6.0, '08123456007', 'Jl. Fatmawati No. 30, Jakarta Selatan', TRUE, '2023-06-20', '/assets/foto-karyawati.png'),
+(8, 'joshua.kurniawan', 'joshua.kuniawan@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Joshua Kurniawan', 'Karyawan', 'Teller Service Officer', 1, 12.0, 12.0, 0.0, '08123456008', 'Jl. Kalibata No. 5, Jakarta Selatan', TRUE, '2024-03-01', '/assets/foto-karyawan.png'),
+(9, 'magnolia.seamel', 'magnolia.seamel@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Magnolia Seamel', 'Karyawan', 'Customer Relations Staff', 1, 12.0, 9.5, 2.5, '08123456009', 'Jl. Kemang Timur No. 14, Jakarta Selatan', TRUE, '2023-09-15', '/assets/foto-karyawati.png'),
+(10, 'anita.sari', 'anita.sari@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Anita Sari', 'Ketua Divisi', 'Head of Credit Division', 2, 12.0, 8.0, 4.0, '08123456010', 'Jl. Bintaro Utama No. 88, Tangerang Selatan', TRUE, '2021-06-01', '/assets/foto-karyawati.png'),
+(11, 'muhammad.kaizo', 'muhammad.kaizo@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Muhammad Kaizo', 'Karyawan', 'Operations Specialist', 3, 12.0, 5.0, 7.0, '08123456011', 'Jl. Pramuka Raya No. 16, Jakarta Timur', TRUE, '2022-11-10', '/assets/foto-karyawan.png'),
+(12, 'laras.ayu', 'laras.ayu@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Laras Ayu', 'Karyawan', 'Risk Analyst', 5, 12.0, 10.0, 2.0, '08123456012', 'Jl. Cilandak Barat No. 22, Jakarta Selatan', TRUE, '2023-04-12', '/assets/foto-karyawati.png'),
+(13, 'dimas.anggoro', 'dimas.anggoro@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Dimas Anggoro', 'Karyawan', 'Junior IT Engineer', 4, 12.0, 12.0, 0.0, '08123456013', 'Jl. Margonda No. 100, Depok', TRUE, '2026-06-01', '/assets/foto-karyawan.png');
 ALTER SEQUENCE users_id_seq RESTART WITH 14;
 
 -- Kaitkan ketua divisi di tabel divisions
-UPDATE divisions SET ketua_id = 3 WHERE id = 1; -- Bagus Santoso di Layanan Nasabah
-UPDATE divisions SET ketua_id = 10 WHERE id = 2; -- Anita Sari di Kredit & Pembiayaan
+UPDATE divisions SET ketua_id = 3 WHERE id = 1; 
+UPDATE divisions SET ketua_id = 10 WHERE id = 2; 
 
 -- Data Pengajuan Cuti Riwayat & Aktif
 INSERT INTO leave_requests (
@@ -230,28 +230,28 @@ INSERT INTO leave_requests (
     nomor_darurat, status, leader_approver_id, leader_approval_date, 
     leader_notes, hrd_approver_id, hrd_approval_date, hrd_notes
 ) VALUES
--- 1. Pengajuan Yusuf Kurniawan (Pending Ketua Divisi)
+-- 1. Pengajuan Andi Martin (Pending Ketua Divisi)
 (1, 'CUTI-202611-001', 5, 1, FALSE, '2026-11-15', '2026-12-28', '2026-12-30', 3.0, 
- 'Liburan akhir tahun bersama keluarga besar', 4, 'Tiket komplain prioritas dialihkan ke Rina Maharani', 
+ 'Liburan akhir tahun bersama keluarga besar', 4, 'Tiket komplain prioritas dialihkan ke Karis Kabanga', 
  'Jl. Malioboro No. 45, Yogyakarta', '081299887766', 'Pending', NULL, NULL, NULL, NULL, NULL, NULL),
 
--- 2. Pengajuan Dewi Hartono (Pending Ketua Divisi)
+-- 2. Pengajuan Nur Aisyah (Pending Ketua Divisi)
 (2, 'CUTI-202611-002', 6, 1, FALSE, '2026-11-14', '2026-12-01', '2026-12-02', 2.0, 
- 'Menghadiri wisuda adik kandung di Bandung', 8, 'Handover antrean kasir loket 2 ke Andi Pratama', 
+ 'Menghadiri wisuda adik kandung di Bandung', 8, 'Handover antrean kasir loket 2 ke Joshua Kurniawan', 
  'Jl. Dago Asri No. 11, Bandung', '081288776655', 'Pending', NULL, NULL, NULL, NULL, NULL, NULL),
 
--- 3. Pengajuan Nadia Putri (Pending Ketua Divisi)
+-- 3. Pengajuan Alisya Nadhifa (Pending Ketua Divisi)
 (3, 'CUTI-202611-003', 7, 1, TRUE, '2026-11-16', '2026-11-20', '2026-11-20', 0.5, 
- 'Keperluan administrasi kependudukan di kelurahan setengah hari siang', 9, 'Back up meja counter oleh Siti Wulandari', 
+ 'Keperluan administrasi kependudukan di kelurahan setengah hari siang', 9, 'Back up meja counter oleh Magnolia Seamel', 
  'Jakarta Selatan', '081277665544', 'Pending', NULL, NULL, NULL, NULL, NULL, NULL),
 
--- 4. Pengajuan Rina Maharani (Approved by Leader, Menunggu HRD)
+-- 4. Pengajuan Karis Kabanga (Approved by Leader, Menunggu HRD)
 (4, 'CUTI-202611-004', 4, 1, FALSE, '2026-11-10', '2026-11-23', '2026-11-24', 2.0, 
- 'Keperluan keluarga penting dan check-up kesehatan rutin orang tua', 8, 'Penanganan nasabah tabungan dibantu Andi Pratama', 
+ 'Keperluan keluarga penting dan check-up kesehatan rutin orang tua', 8, 'Penanganan nasabah tabungan dibantu Joshua Kurniawan', 
  'Jl. Pandanaran No. 50, Semarang', '08123456004', 'Approved by Leader', 3, '2026-11-11 09:30:00', 
  'Handover tugas telah disetujui, koordinasi loket aman.', NULL, NULL, NULL),
 
--- 5. Pengajuan Bayu Setiawan (Approved by Leader, Menunggu HRD - Divisi Operasional Kapasitas 33%)
+-- 5. Pengajuan Muhammad Kaizo (Approved by Leader, Menunggu HRD - Divisi Operasional Kapasitas 33%)
 (5, 'CUTI-202611-005', 11, 1, FALSE, '2026-11-12', '2026-11-25', '2026-11-27', 3.0, 
  'Renovasi rumah tempat tinggal', NULL, 'Tugas kliring di-cover oleh tim operasional shift pagi', 
  'Jl. Pramuka Raya No. 16, Jakarta Timur', '08123456011', 'Approved by Leader', NULL, '2026-11-13 14:00:00', 
@@ -268,15 +268,15 @@ INSERT INTO leave_requests (
  'Rumah tinggal Jakarta', '08123456012', 'Approved by Leader', NULL, '2026-11-16 08:30:00', 
  'Surat dokter terlampir valid dari RS Siloam.', NULL, NULL, NULL),
 
--- 8. Pengajuan Terdahulu Rina Maharani (Approved Final)
+-- 8. Pengajuan Terdahulu Karis Kabanga (Approved Final)
 (8, 'CUTI-202610-015', 4, 1, FALSE, '2026-10-05', '2026-10-12', '2026-10-13', 2.0, 
- 'Cuti tahunan keperluan pindah rumah', 9, 'Siti Wulandari standby customer desk', 
+ 'Cuti tahunan keperluan pindah rumah', 9, 'Magnolia Seamel standby customer desk', 
  'Jakarta Selatan', '08123456004', 'Approved', 3, '2026-10-06 10:00:00', 
  'Disetujui.', 2, '2026-10-07 14:15:00', 'Persetujuan HRD final selesai.'),
 
--- 9. Pengajuan Rina Maharani Setengah Hari Terdahulu (Approved Final)
+-- 9. Pengajuan Karis Kabanga Setengah Hari Terdahulu (Approved Final)
 (9, 'CUTI-202609-008', 4, 1, TRUE, '2026-09-18', '2026-09-22', '2026-09-22', 0.5, 
- 'Perpanjangan SIM di samsat pagi hari', 8, 'Andi Pratama cover pagi', 
+ 'Perpanjangan SIM di samsat pagi hari', 8, 'Joshua Kurniawan cover pagi', 
  'Jakarta Selatan', '08123456004', 'Approved', 3, '2026-09-19 08:00:00', 
  'Disetujui.', 2, '2026-09-19 11:00:00', 'Disetujui.');
 ALTER SEQUENCE leave_requests_id_seq RESTART WITH 10;

@@ -37,7 +37,7 @@ async function tryPassword(pw) {
     return true;
   } catch (err) {
     // console.log(`pw "${pw}": ${err.message}`);
-    try { await client.end(); } catch (e) {}
+    try { await client.end(); } catch (e) { }
     return false;
   }
 }
