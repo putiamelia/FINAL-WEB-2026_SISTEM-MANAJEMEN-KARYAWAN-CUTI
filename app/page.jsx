@@ -57,12 +57,12 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen w-full bg-white flex flex-col lg:grid lg:grid-cols-12">
-      {/* Kolom Kiri: Branding & Visual BNS Bank Nusantara (Full Height) */}
-      <div className="lg:col-span-7 flex flex-col justify-between bg-white border-b lg:border-b-0 lg:border-r border-[#D9DEE5] min-h-screen lg:min-h-full">
-        {/* Bagian Atas: Logo, Tagline, dan Foto Karyawan Besar */}
+    <main className="min-h-screen w-full bg-white flex flex-col lg:grid lg:grid-cols-12 overflow-x-hidden">
+      {/* Kolom Kiri: Branding & Visual BNS Bank Nusantara (Desktop 7 cols / Mobile & Tablet stacked di bawah) */}
+      <div className="order-2 lg:order-1 lg:col-span-7 flex flex-col justify-between bg-white border-t lg:border-t-0 lg:border-r border-[#D9DEE5] lg:min-h-screen">
+        {/* Bagian Atas: Logo, Tagline, dan Foto Karyawan Besar (Tampil di Desktop / Layar Lebar) */}
         <div className="pt-8 sm:pt-12 px-6 sm:px-12 text-center flex-1 flex flex-col justify-between">
-          <div>
+          <div className="hidden lg:block">
             {/* Logo BNS bersih tanpa kotak garis luar, berlatar putih murni */}
             <div className="mb-4 sm:mb-5">
               <img
@@ -76,8 +76,8 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Foto Karyawan BNS: Ukuran besar, posisi pas di atas banner biru yang dinaikkan */}
-          <div className="mt-6 flex items-end justify-center -space-x-10 sm:-space-x-16 px-4 overflow-hidden pt-4">
+          {/* Foto Karyawan BNS: Ukuran besar, tampil penuh di layar desktop/laptop */}
+          <div className="hidden lg:flex items-end justify-center -space-x-10 sm:-space-x-16 px-4 overflow-hidden pt-4">
             <div className="w-56 sm:w-72 md:w-80 lg:w-96 h-80 sm:h-96 md:h-[430px] lg:h-[470px] relative z-10 flex items-end justify-center">
               <img
                 src="/assets/foto-karyawan.png"
@@ -95,45 +95,57 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Bagian Bawah: Navy Banner Selamat Datang (Dinaikkan ke atas sedikit dengan tinggi & padding proporsional) */}
-        <div className="bg-[#0B2545] p-8 sm:p-10 lg:p-12 text-white border-t border-[#081B33]">
+        {/* Bagian Bawah: Navy Banner Selamat Datang */}
+        <div className="bg-[#0B2545] p-6 sm:p-8 lg:p-12 text-white border-t border-[#081B33]">
           <div className="text-xs sm:text-sm font-bold text-[#E3C06D] tracking-widest uppercase mb-1.5">
             Selamat Datang
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2.5">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white mb-2">
             Insan Bank Nusantara
           </h1>
-          <p className="text-sm sm:text-base text-[#C9D3E3] mb-5">
+          <p className="text-xs sm:text-sm lg:text-base text-[#C9D3E3] mb-4 lg:mb-5">
             Masuk dengan akun pegawai untuk mengelola cuti Anda.
           </p>
 
           {/* Feature Chips */}
-          <div className="flex flex-wrap gap-2.5 text-xs sm:text-sm">
-            <div className="flex items-center gap-2 px-3.5 py-2 rounded bg-[#13315C] text-[#C9D3E3] border border-[#17386B] font-medium">
-              <CalendarCheck className="w-4 h-4 text-[#E3C06D]" aria-hidden="true" />
+          <div className="flex flex-wrap gap-2 sm:gap-2.5 text-xs sm:text-sm">
+            <div className="flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded bg-[#13315C] text-[#C9D3E3] border border-[#17386B] font-medium">
+              <CalendarCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E3C06D]" aria-hidden="true" />
               <span>Pengajuan cuti</span>
             </div>
-            <div className="flex items-center gap-2 px-3.5 py-2 rounded bg-[#13315C] text-[#C9D3E3] border border-[#17386B] font-medium">
-              <ShieldCheck className="w-4 h-4 text-[#E3C06D]" aria-hidden="true" />
+            <div className="flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded bg-[#13315C] text-[#C9D3E3] border border-[#17386B] font-medium">
+              <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E3C06D]" aria-hidden="true" />
               <span>Persetujuan atasan</span>
             </div>
-            <div className="flex items-center gap-2 px-3.5 py-2 rounded bg-[#13315C] text-[#C9D3E3] border border-[#17386B] font-medium">
-              <Users className="w-4 h-4 text-[#E3C06D]" aria-hidden="true" />
+            <div className="flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded bg-[#13315C] text-[#C9D3E3] border border-[#17386B] font-medium">
+              <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E3C06D]" aria-hidden="true" />
               <span>Jadwal tim</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Kolom Kanan: Formulir Login (Full Height) */}
-      <div className="lg:col-span-5 p-8 sm:p-12 lg:p-12 xl:p-16 flex flex-col justify-between bg-white min-h-screen lg:min-h-full">
-        <div className="max-w-md w-full mx-auto my-auto py-6">
-          <div className="text-center mb-8">
+      {/* Kolom Kanan: Formulir Login (Tampil di atas saat mobile/tablet agar langsung bisa login) */}
+      <div className="order-1 lg:order-2 lg:col-span-5 p-5 sm:p-10 lg:p-12 xl:p-16 flex flex-col justify-between bg-white lg:min-h-screen">
+        <div className="max-w-md w-full mx-auto my-auto py-4 sm:py-6">
+          {/* Header Mobile / Tablet: Logo BNS tampil di atas form saat layar kecil/tablet */}
+          <div className="lg:hidden text-center mb-6">
+            <img
+              src="/assets/logo-bns.png"
+              alt="Bank Nusantara Logo"
+              className="h-12 sm:h-14 w-auto mx-auto object-contain mb-2.5"
+            />
+            <p className="text-xs sm:text-sm text-[#4A5565] max-w-sm mx-auto leading-relaxed">
+              Urus cuti tanpa ribet, nikmati waktu yang berarti. Satu tempat untuk pengajuan, persetujuan, dan jadwal cuti.
+            </p>
+          </div>
+
+          <div className="text-center mb-6 sm:mb-8">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0B2545]">
               Masuk ke Akun Pegawai
             </h2>
-            <div className="w-16 h-0.5 bg-[#C8A24A] mx-auto mt-2.5 mb-3"></div>
-            <p className="text-sm text-[#4A5565]">
+            <div className="w-16 h-0.5 bg-[#C8A24A] mx-auto mt-2 mb-2 sm:mb-2.5"></div>
+            <p className="text-xs sm:text-sm text-[#4A5565]">
               Masuk dengan email atau username dan kata sandi akun Anda.
             </p>
           </div>
@@ -159,8 +171,8 @@ export default function LoginPage() {
                 required
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                placeholder="Contoh: rina.maharani"
-                className="input-field h-11 sm:h-12 text-sm sm:text-base px-3.5"
+                placeholder="Contoh: karis.kabanga"
+                className="input-field h-11 sm:h-12 text-sm sm:text-base px-3.5 w-full"
               />
             </div>
 
@@ -178,7 +190,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="input-field h-11 sm:h-12 text-sm sm:text-base px-3.5"
+                className="input-field h-11 sm:h-12 text-sm sm:text-base px-3.5 w-full"
               />
             </div>
 
@@ -190,7 +202,7 @@ export default function LoginPage() {
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="w-4 h-4 text-[#13315C] rounded border-[#D9DEE5] focus:ring-[#13315C]"
                 />
-                <span>Ingat saya di perangkat ini</span>
+                <span>Ingat saya</span>
               </label>
               <button
                 type="button"

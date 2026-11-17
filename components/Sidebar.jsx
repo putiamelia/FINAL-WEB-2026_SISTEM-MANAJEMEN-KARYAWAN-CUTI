@@ -206,18 +206,21 @@ export default function Sidebar({ user }) {
   return (
     <>
       {/* Mobile top trigger bar */}
-      <div className="lg:hidden flex items-center justify-between bg-[#0B2545] text-white px-4 py-3 border-b border-[#13315C]">
-        <div className="flex items-center gap-2">
-          <img src="/assets/logo-bns.png" alt="BNS" className="h-6 w-auto bg-[#FBFAF7] p-1 rounded" />
-          <span className="font-semibold text-sm">e-Cuti BNS</span>
+      <div className="lg:hidden flex items-center justify-between bg-[#0B2545] text-white px-4 py-3 border-b border-[#13315C] sticky top-0 z-40 w-full shadow-sm">
+        <div className="flex items-center gap-2.5">
+          <img src="/assets/logo-bns.png" alt="BNS" className="h-7 w-auto bg-white p-1 rounded" />
+          <div>
+            <span className="font-bold text-sm block leading-tight text-white">Bank Nusantara</span>
+            <span className="text-[10px] text-[#C9D3E3] block leading-tight">e-Cuti Karyawan</span>
+          </div>
         </div>
         <button
           type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-2 rounded hover:bg-[#13315C] text-white"
+          className="p-2 rounded hover:bg-[#13315C] text-white focus:outline-none focus:ring-2 focus:ring-[#C8A24A]"
           aria-label={mobileOpen ? 'Tutup menu' : 'Buka menu'}
         >
-          {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {mobileOpen ? <X className="w-6 h-6 text-[#E3C06D]" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 
@@ -232,11 +235,11 @@ export default function Sidebar({ user }) {
       {mobileOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div
-            className="fixed inset-0 bg-black/50"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
             aria-hidden="true"
           />
-          <div className="relative w-[280px] max-w-full h-full z-10">
+          <div className="relative w-[280px] max-w-[85vw] h-full z-10 shadow-2xl">
             {sidebarContent}
           </div>
         </div>

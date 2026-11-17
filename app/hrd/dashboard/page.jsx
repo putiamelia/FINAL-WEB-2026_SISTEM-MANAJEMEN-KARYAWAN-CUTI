@@ -138,7 +138,7 @@ export default function HrdDashboard() {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full text-left border-collapse min-w-[550px]">
                 <thead>
                   <tr>
                     <th className="table-header">Nama Divisi</th>

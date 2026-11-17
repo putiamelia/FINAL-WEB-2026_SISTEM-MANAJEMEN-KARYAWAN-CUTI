@@ -44,14 +44,14 @@ export default function DashboardLayout({ children, breadcrumbs = [] }) {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-[#F1F3F6] flex">
+    <div className="min-h-screen bg-[#F1F3F6] flex flex-col lg:flex-row">
       {/* Sidebar Navigation */}
       <Sidebar user={user} />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         <Topbar breadcrumbs={breadcrumbs} user={user} />
-        <main className="flex-1 p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
           {children}
         </main>
       </div>

@@ -112,23 +112,23 @@ export default function KaryawanDashboard() {
       )}
 
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-[#0B2545] tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-[#0B2545] tracking-tight">
             Dashboard Karyawan
           </h1>
           <p className="text-xs text-[#4A5565] mt-1">
             Selamat datang, <span className="font-semibold text-[#0B2545]">{profile?.nama_lengkap || 'Rina Maharani'}</span>. Kelola dan pantau pengajuan cuti Anda secara transparan.
           </p>
         </div>
-        <Link href="/karyawan/pengajuan" className="btn-primary shrink-0 text-xs">
+        <Link href="/karyawan/pengajuan" className="btn-primary shrink-0 text-xs w-full sm:w-auto justify-center">
           <CalendarPlus className="w-4 h-4" />
           <span>Ajukan Cuti Baru</span>
         </Link>
       </div>
 
       {/* 4 Kartu Statistik Utama sesuai DESIGN.md */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
         <StatCard
           label="Sisa Kuota Cuti Tahunan"
           value={`${formatDecimal(sisaKuota)} hari`}
@@ -171,7 +171,7 @@ export default function KaryawanDashboard() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse min-w-[500px]">
               <thead>
                 <tr>
                   <th className="table-header">No. Pengajuan</th>
