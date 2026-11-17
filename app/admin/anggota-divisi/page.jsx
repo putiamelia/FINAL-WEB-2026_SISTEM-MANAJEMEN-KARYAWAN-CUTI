@@ -219,13 +219,13 @@ export default function AdminAnggotaDivisiPage() {
                 </div>
 
                 <div className="relative w-full sm:w-64">
-                  <Search className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
+                  <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     type="text"
                     placeholder="Cari nama, NIP, peran..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-3 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[#0B2545]"
+                    className="w-full pl-10 pr-3 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[#0B2545]"
                   />
                 </div>
               </div>

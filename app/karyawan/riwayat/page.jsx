@@ -110,11 +110,11 @@ export default function RiwayatPengajuanPage() {
 
         {/* Filter Dropdown */}
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-[#4A5565]" />
+          <Filter className="w-4 h-4 text-[#4A5565] shrink-0" />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="input-field w-auto text-xs py-1.5 h-10"
+            className="input-field !w-44 text-xs !h-9"
           >
             <option value="Semua">Semua Status</option>
             <option value="Pending">Pending</option>
@@ -129,7 +129,7 @@ export default function RiwayatPengajuanPage() {
       {/* Tabel Riwayat */}
       <div className="bg-white rounded-md border border-[#D9DEE5] overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full min-w-[680px] text-left border-collapse">
             <thead>
               <tr>
                 <th className="table-header">Nomor Pengajuan</th>

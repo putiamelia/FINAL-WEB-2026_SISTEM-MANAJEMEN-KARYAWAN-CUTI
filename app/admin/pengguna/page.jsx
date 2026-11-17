@@ -225,54 +225,61 @@ export default function AdminPenggunaPage() {
       </div>
 
       {/* Filter Bar */}
-      <div className="bg-white p-4 rounded-md border border-[#D9DEE5] mb-6 flex flex-wrap items-center justify-between gap-4 shadow-sm text-xs">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="relative">
-            <Search className="w-4 h-4 text-[#4A5565] absolute left-3 top-2.5" />
+      <div className="bg-white p-3.5 sm:p-4 rounded-md border border-[#D9DEE5] mb-6 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 shadow-sm text-xs">
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3 flex-1">
+          {/* Search Input with aligned icon */}
+          <div className="relative flex-1 sm:flex-initial sm:w-64 min-w-[220px]">
+            <Search className="w-4 h-4 text-[#4A5565] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               placeholder="Cari nama / email / username..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="input-field pl-9 h-9 text-xs w-64"
+              className="input-field input-search !h-9 text-xs w-full"
             />
           </div>
 
-          <select
-            value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value)}
-            className="input-field h-9 text-xs w-36"
-          >
-            <option value="Semua">Semua Role</option>
-            <option value="Admin">Admin</option>
-            <option value="HRD">HRD</option>
-            <option value="Ketua Divisi">Ketua Divisi</option>
-            <option value="Karyawan">Karyawan</option>
-          </select>
+          {/* Role Filter Select */}
+          <div className="w-full sm:w-36">
+            <select
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+              className="input-field !h-9 text-xs w-full"
+            >
+              <option value="Semua">Semua Role</option>
+              <option value="Admin">Admin</option>
+              <option value="HRD">HRD</option>
+              <option value="Ketua Divisi">Ketua Divisi</option>
+              <option value="Karyawan">Karyawan</option>
+            </select>
+          </div>
 
-          <select
-            value={divisiFilter}
-            onChange={(e) => setDivisiFilter(e.target.value)}
-            className="input-field h-9 text-xs w-48"
-          >
-            <option value="Semua">Semua Divisi</option>
-            {divisions.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.nama_divisi}
-              </option>
-            ))}
-          </select>
+          {/* Divisi Filter Select */}
+          <div className="w-full sm:w-48">
+            <select
+              value={divisiFilter}
+              onChange={(e) => setDivisiFilter(e.target.value)}
+              className="input-field !h-9 text-xs w-full"
+            >
+              <option value="Semua">Semua Divisi</option>
+              {divisions.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.nama_divisi}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        <span className="text-[#4A5565] font-semibold">
+        <div className="text-[#4A5565] font-semibold text-xs shrink-0 self-end sm:self-center">
           Total {filteredUsers.length} Pengguna
-        </span>
+        </div>
       </div>
 
       {/* Tabel Pengguna */}
       <div className="bg-white rounded-md border border-[#D9DEE5] overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full min-w-[700px] text-left border-collapse">
             <thead>
               <tr>
                 <th className="table-header">Pegawai</th>

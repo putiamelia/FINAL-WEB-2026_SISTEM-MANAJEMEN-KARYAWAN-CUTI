@@ -80,55 +80,62 @@ export default function SemuaPengajuanHrdPage() {
       </div>
 
       {/* Filter Bar */}
-      <div className="bg-white p-4 rounded-md border border-[#D9DEE5] mb-6 flex flex-wrap items-center justify-between gap-4 shadow-sm text-xs">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="relative">
-            <Search className="w-4 h-4 text-[#4A5565] absolute left-3 top-2.5" />
+      <div className="bg-white p-3.5 sm:p-4 rounded-md border border-[#D9DEE5] mb-6 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 shadow-sm text-xs">
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3 flex-1">
+          {/* Search Input with aligned icon */}
+          <div className="relative flex-1 sm:flex-initial sm:w-64 min-w-[220px]">
+            <Search className="w-4 h-4 text-[#4A5565] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               placeholder="Cari nama pegawai / no. cuti..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="input-field pl-9 h-9 text-xs w-60"
+              className="input-field input-search !h-9 text-xs w-full"
             />
           </div>
 
-          <select
-            value={selectedDivisi}
-            onChange={(e) => setSelectedDivisi(e.target.value)}
-            className="input-field h-9 text-xs w-48"
-          >
-            <option value="Semua">Semua Divisi</option>
-            {divisions.map((d) => (
-              <option key={d.id} value={d.nama_divisi}>
-                {d.nama_divisi}
-              </option>
-            ))}
-          </select>
+          {/* Divisi Select */}
+          <div className="w-full sm:w-48">
+            <select
+              value={selectedDivisi}
+              onChange={(e) => setSelectedDivisi(e.target.value)}
+              className="input-field !h-9 text-xs w-full"
+            >
+              <option value="Semua">Semua Divisi</option>
+              {divisions.map((d) => (
+                <option key={d.id} value={d.nama_divisi}>
+                  {d.nama_divisi}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <select
-            value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value)}
-            className="input-field h-9 text-xs w-40"
-          >
-            <option value="Semua">Semua Status</option>
-            <option value="Pending">Pending</option>
-            <option value="Approved by Leader">Approved by Leader</option>
-            <option value="Approved">Approved</option>
-            <option value="Rejected">Rejected</option>
-            <option value="Cancelled">Cancelled</option>
-          </select>
+          {/* Status Select */}
+          <div className="w-full sm:w-40">
+            <select
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              className="input-field !h-9 text-xs w-full"
+            >
+              <option value="Semua">Semua Status</option>
+              <option value="Pending">Pending</option>
+              <option value="Approved by Leader">Approved by Leader</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
         </div>
 
-        <span className="text-[#4A5565] font-semibold">
+        <div className="text-[#4A5565] font-semibold text-xs shrink-0 self-end sm:self-center">
           Ditemukan {filteredRequests.length} Berkas
-        </span>
+        </div>
       </div>
 
       {/* Tabel */}
       <div className="bg-white rounded-md border border-[#D9DEE5] overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full min-w-[800px] text-left border-collapse">
             <thead>
               <tr>
                 <th className="table-header">No. Pengajuan</th>

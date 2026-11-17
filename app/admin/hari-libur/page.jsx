@@ -198,7 +198,7 @@ export default function AdminHariLiburPage() {
                 </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
+                  <table className="w-full min-w-[500px] text-left text-xs">
                     <thead>
                       <tr className="table-header">
                         <th className="py-2.5 px-4">Tanggal</th>

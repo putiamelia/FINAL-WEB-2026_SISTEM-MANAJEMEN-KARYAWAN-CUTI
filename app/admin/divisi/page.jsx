@@ -187,7 +187,7 @@ export default function AdminDivisiPage() {
       {/* Tabel Divisi */}
       <div className="bg-white rounded-md border border-[#D9DEE5] overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full min-w-[700px] text-left border-collapse">
             <thead>
               <tr>
                 <th className="table-header">Nama Divisi</th>

@@ -49,7 +49,7 @@ export default function DashboardLayout({ children, breadcrumbs = [] }) {
       <Sidebar user={user} />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
+      <div className="flex-1 flex flex-col min-w-0">
         <Topbar breadcrumbs={breadcrumbs} user={user} />
         <main className="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
           {children}

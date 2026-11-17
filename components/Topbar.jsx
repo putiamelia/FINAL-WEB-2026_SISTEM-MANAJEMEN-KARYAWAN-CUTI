@@ -37,7 +37,7 @@ export default function Topbar({ breadcrumbs = [], user }) {
   }
 
   return (
-    <header className="bg-white border-b border-[#D9DEE5] px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 flex items-center justify-between sticky top-0 z-30">
+    <header className="bg-white border-b border-[#D9DEE5] px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 flex items-center justify-between relative lg:sticky lg:top-0 z-30">
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="text-xs sm:text-sm min-w-0 mr-2 overflow-x-auto whitespace-nowrap py-1">
         <ol className="flex items-center space-x-1.5 sm:space-x-2 text-[#4A5565]">
