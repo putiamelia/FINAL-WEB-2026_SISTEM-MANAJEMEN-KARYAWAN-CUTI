@@ -14,10 +14,12 @@ export async function POST(request) {
 
     const formData = await request.formData();
     const file = formData.get('file');
-    const targetUserId = formData.get('user_id') ? parseInt(formData.get('user_id'), 10) : decoded.id;
+    const isNew = formData.get('is_new') === 'true';
+    const rawUserId = formData.get('user_id');
+    const targetUserId = rawUserId ? parseInt(rawUserId, 10) : (isNew ? null : decoded.id);
 
-    // Hanya admin yang boleh upload untuk user lain
-    if (targetUserId !== decoded.id && decoded.role !== 'Admin') {
+    // Hanya admin yang boleh upload untuk user lain atau saat tambah user baru
+    if (targetUserId && targetUserId !== decoded.id && decoded.role !== 'Admin') {
       return NextResponse.json({ error: 'Hanya Admin yang dapat mengubah foto pengguna lain' }, { status: 403 });
     }
 
@@ -41,7 +43,7 @@ export async function POST(request) {
 
     const ext = file.name.split('.').pop() || 'png';
     const cleanExt = ext.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-    const filename = `avatar-${targetUserId}-${Date.now()}.${cleanExt}`;
+    const filename = `avatar-${targetUserId || 'new'}-${Date.now()}.${cleanExt}`;
 
     const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'avatars');
     await mkdir(uploadDir, { recursive: true });
@@ -51,14 +53,16 @@ export async function POST(request) {
 
     const publicUrl = `/uploads/avatars/${filename}`;
 
-    // Update database jika koneksi aktif
-    try {
-      await query(`UPDATE users SET foto_profil = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2`, [
-        publicUrl,
-        targetUserId,
-      ]);
-    } catch (dbErr) {
-      console.warn('Database update skipped or failed:', dbErr.message);
+    // Update database hanya jika user ID terdaftar (bukan form tambah pengguna baru)
+    if (targetUserId) {
+      try {
+        await query(`UPDATE users SET foto_profil = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2`, [
+          publicUrl,
+          targetUserId,
+        ]);
+      } catch (dbErr) {
+        console.warn('Database update skipped or failed:', dbErr.message);
+      }
     }
 
     return NextResponse.json({

@@ -12,6 +12,7 @@ import {
   X,
   AlertCircle,
   CheckCircle,
+  UploadCloud,
 } from 'lucide-react';
 import { formatDateIndo, formatDecimal } from '@/lib/utils';
 
@@ -30,6 +31,7 @@ export default function AdminPenggunaPage() {
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   // Form Fields
   const [formData, setFormData] = useState({
@@ -385,66 +387,73 @@ export default function AdminPenggunaPage() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-              {/* Pilihan & Unggah Foto Profil */}
-              <div className="flex items-center gap-4 p-3 bg-gray-50 rounded border border-[#D9DEE5]">
-                <img
-                  src={formData.foto_profil || '/assets/foto-karyawan.png'}
-                  alt="Foto Profil"
-                  className="w-14 h-14 rounded-full object-cover border-2 border-[#13315C]"
-                />
-                <div className="flex-1 space-y-1.5">
+              {/* Unggah Foto Profil */}
+              <div className="flex items-center gap-4 p-3.5 bg-gray-50 rounded-md border border-[#D9DEE5]">
+                <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[#13315C] bg-white shrink-0 shadow-sm">
+                  <img
+                    src={formData.foto_profil || '/assets/foto-karyawan.png'}
+                    alt="Foto Profil"
+                    className="w-full h-full object-cover"
+                  />
+                  {uploadingPhoto && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 space-y-1">
                   <label className="block text-[11px] font-bold text-[#0B2545] uppercase tracking-wider">
                     Foto Profil Pegawai
                   </label>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, foto_profil: '/assets/foto-karyawan.png' })}
-                      className={`px-2.5 py-1 rounded text-[11px] font-medium border transition-colors ${
-                        formData.foto_profil === '/assets/foto-karyawan.png'
-                          ? 'bg-[#0B2545] text-white border-[#0B2545]'
-                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
-                      }`}
-                    >
-                      Pria (Jas)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, foto_profil: '/assets/foto-karyawati.png' })}
-                      className={`px-2.5 py-1 rounded text-[11px] font-medium border transition-colors ${
-                        formData.foto_profil === '/assets/foto-karyawati.png'
-                          ? 'bg-[#0B2545] text-white border-[#0B2545]'
-                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
-                      }`}
-                    >
-                      Wanita (Hijab)
-                    </button>
-                    <label className="cursor-pointer px-2.5 py-1 rounded text-[11px] font-medium bg-white text-[#13315C] border border-[#13315C] hover:bg-blue-50 transition-colors">
-                      <span>Unggah Foto Baru</span>
+                  <p className="text-[11px] text-[#4A5565]">
+                    Format JPG, PNG, atau WebP (Maksimal 5 MB)
+                  </p>
+                  <div className="flex items-center gap-2 pt-0.5">
+                    <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-[#13315C] text-white hover:bg-[#0B2545] transition-colors shadow-sm">
+                      <UploadCloud className="w-3.5 h-3.5" />
+                      <span>{uploadingPhoto ? 'Mengunggah...' : (formData.foto_profil && formData.foto_profil.startsWith('/uploads/') ? 'Ganti Foto' : 'Tambahkan Foto')}</span>
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/jpeg,image/png,image/webp"
+                        disabled={uploadingPhoto}
                         className="hidden"
                         onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (!file) return;
+                          setUploadingPhoto(true);
                           const upData = new FormData();
                           upData.append('file', file);
-                          if (formData.id) upData.append('user_id', formData.id);
+                          if (formData.id) {
+                            upData.append('user_id', formData.id);
+                          } else {
+                            upData.append('is_new', 'true');
+                          }
                           try {
                             const res = await fetch('/api/user/upload-avatar', { method: 'POST', body: upData });
                             const result = await res.json();
                             if (res.ok) {
-                              setFormData({ ...formData, foto_profil: result.url });
+                              setFormData((prev) => ({ ...prev, foto_profil: result.url }));
                             } else {
                               alert(result.error || 'Gagal mengunggah foto');
                             }
                           } catch (err) {
                             alert('Gagal mengunggah foto');
+                          } finally {
+                            setUploadingPhoto(false);
+                            e.target.value = '';
                           }
                         }}
                       />
                     </label>
+                    {formData.foto_profil && formData.foto_profil.startsWith('/uploads/') && (
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, foto_profil: '/assets/foto-karyawan.png' })}
+                        className="text-[11px] text-red-600 hover:text-red-700 underline px-1 py-1"
+                      >
+                        Hapus Foto
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
