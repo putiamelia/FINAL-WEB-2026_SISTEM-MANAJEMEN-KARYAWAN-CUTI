@@ -60,41 +60,44 @@ export default function LoginPage() {
     <main className="min-h-screen bg-[#F1F3F6] flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-5xl bg-white rounded-lg shadow-sm border border-[#D9DEE5] overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[640px]">
         {/* Kolom Kiri: Branding & Visual BNS Bank Nusantara */}
-        <div className="lg:col-span-7 flex flex-col justify-between bg-[#FBFAF7] border-b lg:border-b-0 lg:border-r border-[#D9DEE5]">
+        <div className="lg:col-span-7 flex flex-col justify-between bg-white border-b lg:border-b-0 lg:border-r border-[#D9DEE5]">
           {/* Bagian Atas: Logo & Tagline */}
-          <div className="p-8 pb-4 text-center">
-            <div className="inline-block p-2 mb-4">
-              <img
-                src="/assets/logo-bns.png"
-                alt="Bank Nusantara Logo"
-                className="h-14 sm:h-16 w-auto mx-auto object-contain"
-              />
+          <div className="pt-8 sm:pt-10 px-6 sm:px-8 pb-0 text-center flex-1 flex flex-col justify-between">
+            <div>
+              {/* Logo BNS dalam bingkai navy seperti mockup */}
+              <div className="inline-block border-2 border-[#0B2545] p-3 px-8 sm:px-10 mb-4 bg-white shadow-sm">
+                <img
+                  src="/assets/logo-bns.png"
+                  alt="Bank Nusantara Logo"
+                  className="h-12 sm:h-14 w-auto mx-auto object-contain"
+                />
+              </div>
+              <p className="text-xs sm:text-sm text-[#4A5565] max-w-sm sm:max-w-md mx-auto leading-relaxed">
+                Urus cuti tanpa ribet, nikmati waktu yang berarti. Satu tempat untuk pengajuan, persetujuan, dan jadwal cuti seluruh tim Anda.
+              </p>
             </div>
-            <p className="text-sm text-[#4A5565] max-w-md mx-auto leading-relaxed">
-              Urus cuti tanpa ribet, nikmati waktu yang berarti. Satu tempat untuk pengajuan, persetujuan, dan jadwal cuti seluruh tim Anda.
-            </p>
 
-            {/* Foto Karyawan BNS */}
-            <div className="mt-6 flex items-end justify-center gap-6 px-4">
-              <div className="w-36 sm:w-44 h-48 sm:h-56 relative rounded-t-xl overflow-hidden shadow-sm border-t-2 border-x-2 border-[#D9DEE5] bg-white">
+            {/* Foto Karyawan BNS: Wanita di kiri, Pria di kanan, menyatu langsung dengan latar tanpa kotak pembatas */}
+            <div className="mt-6 flex items-end justify-center -space-x-3 sm:-space-x-4 px-4 overflow-hidden pt-2">
+              <div className="w-36 sm:w-44 h-52 sm:h-60 relative z-10 flex items-end">
                 <img
                   src="/assets/foto-karyawati.png"
                   alt="Karyawati Bank Nusantara"
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-contain object-bottom drop-shadow-sm"
                 />
               </div>
-              <div className="w-36 sm:w-44 h-52 sm:h-60 relative rounded-t-xl overflow-hidden shadow-sm border-t-2 border-x-2 border-[#D9DEE5] bg-white">
+              <div className="w-36 sm:w-44 h-56 sm:h-64 relative z-0 flex items-end">
                 <img
                   src="/assets/foto-karyawan.png"
                   alt="Karyawan Bank Nusantara"
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-contain object-bottom drop-shadow-sm"
                 />
               </div>
             </div>
           </div>
 
           {/* Bagian Bawah: Navy Banner Selamat Datang */}
-          <div className="bg-[#0B2545] p-6 sm:p-8 text-white">
+          <div className="bg-[#0B2545] p-6 sm:p-8 text-white border-t border-[#081B33]">
             <div className="text-[11px] font-semibold text-[#E3C06D] tracking-widest uppercase mb-1">
               Selamat Datang
             </div>
@@ -127,10 +130,11 @@ export default function LoginPage() {
         <div className="lg:col-span-5 p-6 sm:p-8 lg:p-10 flex flex-col justify-between bg-white">
           <div>
             <div className="text-center mb-6">
-              <h2 className="text-xl font-bold text-[#0B2545] inline-block border-b-2 border-[#C8A24A] pb-1.5 px-2">
+              <h2 className="text-xl font-bold text-[#0B2545]">
                 Masuk ke Akun Pegawai
               </h2>
-              <p className="text-xs text-[#4A5565] mt-2">
+              <div className="w-16 h-0.5 bg-[#C8A24A] mx-auto mt-2 mb-2.5"></div>
+              <p className="text-xs text-[#4A5565]">
                 Masuk dengan email atau username dan kata sandi akun Anda.
               </p>
             </div>
@@ -211,7 +215,7 @@ export default function LoginPage() {
             <div className="mt-5 p-3 rounded bg-[#FBFAF7] border border-[#D9DEE5] text-xs text-[#4A5565] leading-relaxed">
               <p className="font-semibold text-[#0B2545] mb-1">Peran Terdeteksi Otomatis:</p>
               <p>
-                Sistem secara otomatis mendeteksi peran Anda (Admin, Karyawan, Ketua Divisi, atau HRD) setelah masuk.
+                Peran Anda (Admin, Karyawan, Ketua Divisi, atau HRD) terdeteksi otomatis setelah masuk. Kendala akun? Hubungi Admin sistem.
               </p>
             </div>
 
