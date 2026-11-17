@@ -64,12 +64,12 @@ export default function LoginPage() {
           {/* Bagian Atas: Logo & Tagline */}
           <div className="pt-8 sm:pt-10 px-6 sm:px-8 pb-0 text-center flex-1 flex flex-col justify-between">
             <div>
-              {/* Logo BNS dalam bingkai navy seperti mockup */}
-              <div className="inline-block border-2 border-[#0B2545] p-3 px-8 sm:px-10 mb-4 bg-white shadow-sm">
+              {/* Logo BNS bersih tanpa garis kotak luar */}
+              <div className="mb-3 sm:mb-4">
                 <img
                   src="/assets/logo-bns.png"
                   alt="Bank Nusantara Logo"
-                  className="h-12 sm:h-14 w-auto mx-auto object-contain"
+                  className="h-14 sm:h-16 w-auto mx-auto object-contain"
                 />
               </div>
               <p className="text-xs sm:text-sm text-[#4A5565] max-w-sm sm:max-w-md mx-auto leading-relaxed">
@@ -77,18 +77,18 @@ export default function LoginPage() {
               </p>
             </div>
 
-            {/* Foto Karyawan BNS: Wanita di kiri, Pria di kanan, menyatu langsung dengan latar tanpa kotak pembatas */}
-            <div className="mt-6 flex items-end justify-center -space-x-3 sm:-space-x-4 px-4 overflow-hidden pt-2">
-              <div className="w-36 sm:w-44 h-52 sm:h-60 relative z-10 flex items-end">
+            {/* Foto Karyawan BNS: Ukuran besar, Karyawati (hijab) di kiri, Karyawan (jas) di kanan, menyatu langsung dengan latar */}
+            <div className="mt-4 sm:mt-6 flex items-end justify-center -space-x-6 sm:-space-x-10 px-2 overflow-hidden">
+              <div className="w-48 sm:w-56 md:w-64 h-64 sm:h-80 md:h-[370px] relative z-10 flex items-end justify-center">
                 <img
-                  src="/assets/foto-karyawati.png"
+                  src="/assets/foto-karyawan.png"
                   alt="Karyawati Bank Nusantara"
                   className="w-full h-full object-contain object-bottom drop-shadow-sm"
                 />
               </div>
-              <div className="w-36 sm:w-44 h-56 sm:h-64 relative z-0 flex items-end">
+              <div className="w-48 sm:w-56 md:w-64 h-68 sm:h-84 md:h-[390px] relative z-0 flex items-end justify-center">
                 <img
-                  src="/assets/foto-karyawan.png"
+                  src="/assets/foto-karyawati.png"
                   alt="Karyawan Bank Nusantara"
                   className="w-full h-full object-contain object-bottom drop-shadow-sm"
                 />
