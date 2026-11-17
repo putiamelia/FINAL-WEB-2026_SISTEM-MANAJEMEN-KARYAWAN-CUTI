@@ -53,7 +53,7 @@ export default function PengajuanCutiPage() {
         const [profRes, typeRes, userRes, holRes] = await Promise.all([
           fetch('/api/user/profile'),
           fetch('/api/admin/leave-types'),
-          fetch('/api/admin/users'),
+          fetch('/api/leave/colleagues'),
           fetch('/api/admin/holidays'),
         ]);
 
@@ -74,8 +74,8 @@ export default function PengajuanCutiPage() {
 
         if (userRes.ok) {
           const u = await userRes.json();
-          // Rekan divisi
-          setColleagues(u.users || []);
+          // Rekan divisi & seluruh pegawai aktif
+          setColleagues(u.colleagues || u.users || []);
         }
 
         if (holRes.ok) {
@@ -417,10 +417,10 @@ export default function PengajuanCutiPage() {
                   >
                     <option value="">-- Pilih Rekan Pengganti --</option>
                     {colleagues
-                      .filter((c) => c.id !== profile?.id)
+                      .filter((c) => !profile?.id || String(c.id) !== String(profile.id))
                       .map((c) => (
                         <option key={c.id} value={c.id}>
-                          {c.nama_lengkap} ({c.jabatan || c.role})
+                          {c.nama_lengkap} ({c.jabatan || c.role}{c.nama_divisi ? `, Divisi ${c.nama_divisi}` : ''})
                         </option>
                       ))}
                   </select>
