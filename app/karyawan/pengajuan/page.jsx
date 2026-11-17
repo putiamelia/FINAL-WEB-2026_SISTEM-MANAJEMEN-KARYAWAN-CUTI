@@ -14,6 +14,10 @@ import {
   RotateCcw,
   XCircle,
   Info,
+  Paperclip,
+  UploadCloud,
+  FileCheck2,
+  Trash2,
 } from 'lucide-react';
 import { calculateWorkingDays, formatDecimal, formatDateIndo } from '@/lib/utils';
 
@@ -35,6 +39,8 @@ export default function PengajuanCutiPage() {
   const [alamatCuti, setAlamatCuti] = useState('');
   const [nomorDarurat, setNomorDarurat] = useState('');
   const [lampiranUrl, setLampiranUrl] = useState('');
+  const [uploadingDoc, setUploadingDoc] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   // Status & Validation
   const [loading, setLoading] = useState(false);
@@ -186,6 +192,47 @@ export default function PengajuanCutiPage() {
     }
   }
 
+  async function handleFileUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingDoc(true);
+    setErrorMsg('');
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/leave/upload-document', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setErrorMsg(data.error || 'Gagal mengunggah berkas lampiran.');
+        setUploadingDoc(false);
+        return;
+      }
+
+      setLampiranUrl(data.url);
+      setUploadedFile({
+        name: data.fileName,
+        size: data.fileSize,
+        url: data.url,
+      });
+    } catch (err) {
+      setErrorMsg('Gagal mengunggah berkas lampiran.');
+    } finally {
+      setUploadingDoc(false);
+    }
+  }
+
+  function handleRemoveFile() {
+    setLampiranUrl('');
+    setUploadedFile(null);
+  }
+
   function handleReset() {
     setIsHalfDay(false);
     setTanggalMulai('');
@@ -194,6 +241,7 @@ export default function PengajuanCutiPage() {
     setHandoverUserId('');
     setCatatanHandover('');
     setLampiranUrl('');
+    setUploadedFile(null);
     setErrorMsg('');
     setSuccessMsg('');
   }
@@ -436,21 +484,76 @@ export default function PengajuanCutiPage() {
               </div>
 
               <div>
-                <label htmlFor="docAttachment" className="block text-xs font-semibold text-[#1B2430] uppercase mb-1.5">
+                <label className="block text-xs font-semibold text-[#1B2430] uppercase mb-1.5">
                   Lampiran Dokumen / Surat Dokter {selectedType?.wajib_lampiran && <span className="text-[#991B1B]">*</span>}
                 </label>
-                <input
-                  id="docAttachment"
-                  type="text"
-                  value={lampiranUrl}
-                  onChange={(e) => setLampiranUrl(e.target.value)}
-                  placeholder="URL atau nama dokumen (misal: surat_dokter_siloam.pdf)"
-                  className="input-field"
-                />
-                <p className="text-[11px] text-[#4A5565] mt-1">
+
+                {!uploadedFile ? (
+                  <div className="mt-1 flex flex-col sm:flex-row items-center gap-3 p-4 border-2 border-dashed border-[#D9DEE5] rounded-md bg-[#FBFAF7] hover:border-[#13315C] transition-colors">
+                    <div className="w-10 h-10 rounded-full bg-blue-50 text-[#13315C] flex items-center justify-center shrink-0">
+                      <UploadCloud className="w-5 h-5 text-[#C8A24A]" />
+                    </div>
+                    <div className="flex-1 text-center sm:text-left">
+                      <p className="text-xs font-semibold text-[#1B2430]">
+                        Sisipkan Berkas Dokumen Pendukung
+                      </p>
+                      <p className="text-[11px] text-[#4A5565]">
+                        Format yang didukung: PDF, JPG, JPEG, PNG (Maksimal 10 MB)
+                      </p>
+                    </div>
+                    <label className="btn-secondary text-xs h-9 px-4 cursor-pointer flex items-center gap-2 shrink-0">
+                      <Paperclip className="w-3.5 h-3.5" />
+                      <span>{uploadingDoc ? 'Mengunggah...' : 'Pilih Berkas'}</span>
+                      <input
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
+                        className="hidden"
+                        disabled={uploadingDoc}
+                        onChange={handleFileUpload}
+                      />
+                    </label>
+                  </div>
+                ) : (
+                  <div className="mt-1 flex items-center justify-between p-3.5 bg-emerald-50 border border-emerald-200 rounded-md">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-8 h-8 rounded bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                        <FileCheck2 className="w-4 h-4 text-emerald-700" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-emerald-900 truncate">
+                          {uploadedFile.name}
+                        </p>
+                        <p className="text-[11px] text-emerald-700">
+                          {(uploadedFile.size / 1024).toFixed(1)} KB &bull; Berhasil dilampirkan
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <a
+                        href={lampiranUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs font-semibold text-[#13315C] hover:underline px-2 py-1"
+                      >
+                        Lihat Berkas
+                      </a>
+                      <button
+                        type="button"
+                        onClick={handleRemoveFile}
+                        className="text-xs text-red-600 hover:text-red-800 p-1.5 hover:bg-red-100/50 rounded flex items-center gap-1"
+                        title="Hapus berkas"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Hapus</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                <p className="text-[11px] text-[#4A5565] mt-1.5">
                   {selectedType?.wajib_lampiran
-                    ? 'Wajib melampirkan surat keterangan dokter yang sah.'
-                    : 'Opsional: Lampirkan dokumen bukti pendukung bila diperlukan.'}
+                    ? 'Wajib melampirkan surat keterangan dokter atau dokumen bukti yang sah.'
+                    : 'Opsional: Lampirkan surat keterangan dokter atau dokumen pendukung bila diperlukan.'}
                 </p>
               </div>
             </div>
