@@ -13,6 +13,7 @@ import {
   Send,
   RotateCcw,
   XCircle,
+  Info,
 } from 'lucide-react';
 import { calculateWorkingDays, formatDecimal, formatDateIndo } from '@/lib/utils';
 
