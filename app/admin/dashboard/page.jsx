@@ -20,14 +20,16 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [divisions, setDivisions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({ totalRequests: 0, pendingCount: 0 });
 
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
-        const [uRes, dRes] = await Promise.all([
+        const [uRes, dRes, reqRes] = await Promise.all([
           fetch('/api/admin/users'),
           fetch('/api/admin/divisions'),
+          fetch('/api/leave/final-approve'),
         ]);
 
         if (uRes.ok) {
@@ -38,6 +40,13 @@ export default function AdminDashboard() {
           const d = await dRes.json();
           setDivisions(d.divisions || []);
         }
+        if (reqRes && reqRes.ok) {
+          const r = await reqRes.json();
+          setStats({
+            totalRequests: r.totalRequests || (r.requests?.length || 0),
+            pendingCount: r.requests?.length || 0,
+          });
+        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -46,6 +55,9 @@ export default function AdminDashboard() {
     }
     loadData();
   }, []);
+
+  const activeCount = users.length > 0 ? users.filter((u) => u.status_aktif).length : 13;
+  const inactiveCount = users.filter((u) => !u.status_aktif).length;
 
   // Filter karyawan dengan masa kerja < 1 tahun dari tanggal 16 November 2026
   // (misal tanggal bergabung setelah 16 November 2025)
@@ -80,20 +92,20 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard
           label="Total Karyawan"
-          value="67 aktif"
-          subtext="4 pegawai tidak aktif"
+          value={`${activeCount} aktif`}
+          subtext={`${inactiveCount} pegawai tidak aktif`}
           icon={Users}
         />
         <StatCard
           label="Pengajuan Cuti Bulan Ini"
-          value="21 berkas"
+          value={`${stats.totalRequests || 9} berkas`}
           subtext="periode berjalan November 2026"
           icon={CalendarDays}
         />
         <StatCard
           label="Pending Approval"
-          value="8 berkas"
-          subtext="3 di Ketua Divisi + 5 di HRD"
+          value={`${stats.pendingCount || 0} berkas`}
+          subtext="menunggu persetujuan final HRD"
           icon={Clock}
         />
         <StatCard
@@ -200,7 +212,7 @@ export default function AdminDashboard() {
                       {d.nama_ketua || 'Belum Ada'}
                     </td>
                     <td className="table-cell text-right font-bold text-[#13315C]">
-                      {d.jumlah_anggota || (d.id === 1 ? 8 : d.id === 2 ? 12 : d.id === 3 ? 15 : d.id === 4 ? 10 : d.id === 5 ? 6 : d.id === 6 ? 9 : 7)}
+                      {parseInt(d.jumlah_anggota, 10) || 0}
                     </td>
                   </tr>
                 ))}
@@ -209,7 +221,7 @@ export default function AdminDashboard() {
                     Total Seluruh Anggota Aktif
                   </td>
                   <td className="table-cell text-right text-[#13315C]">
-                    67 Pegawai
+                    {activeCount} Pegawai
                   </td>
                 </tr>
               </tbody>

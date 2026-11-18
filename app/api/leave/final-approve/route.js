@@ -85,7 +85,19 @@ export async function GET(request) {
       })
     );
 
-    return NextResponse.json({ requests: enrichedRequests });
+    const statsRes = await query(`
+      SELECT 
+        (SELECT COUNT(*) FROM leave_requests) as total_requests,
+        (SELECT COUNT(DISTINCT user_id) FROM leave_requests WHERE status IN ('Approved', 'Approved by Leader')) as on_leave_count
+    `);
+    const totalRequests = parseInt(statsRes.rows[0]?.total_requests || '0', 10);
+    const onLeaveCount = parseInt(statsRes.rows[0]?.on_leave_count || '0', 10);
+
+    return NextResponse.json({ 
+      requests: enrichedRequests,
+      totalRequests,
+      onLeaveCount,
+    });
   } catch (err) {
     console.error('Error fetching HRD approvals:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });

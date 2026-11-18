@@ -20,9 +20,11 @@ import { formatDecimal, formatDateRange } from '@/lib/utils';
 export default function HrdDashboard() {
   const [profile, setProfile] = useState(null);
   const [divisions, setDivisions] = useState([]);
+  const [users, setUsers] = useState([]);
   const [activeLeaves, setActiveLeaves] = useState([]);
   const [highQuotaUsers, setHighQuotaUsers] = useState([]);
-  const [pendingCount, setPendingCount] = useState(5);
+  const [pendingCount, setPendingCount] = useState(0);
+  const [stats, setStats] = useState({ totalRequests: 0, onLeaveCount: 0 });
   const [toast, setToast] = useState('');
 
   useEffect(() => {
@@ -45,12 +47,20 @@ export default function HrdDashboard() {
         }
         if (reqRes.ok) {
           const r = await reqRes.json();
-          setPendingCount(r.requests?.length || 5);
+          setPendingCount(r.requests?.length || 0);
+          if (r.totalRequests !== undefined) {
+            setStats({
+              totalRequests: r.totalRequests,
+              onLeaveCount: r.onLeaveCount || 0,
+            });
+          }
         }
         if (userRes.ok) {
           const u = await userRes.json();
+          const userList = u.users || [];
+          setUsers(userList);
           // Filter karyawan dengan sisa kuota besar >= 10 hari (peringatan kuota hangus akhir tahun)
-          const high = (u.users || []).filter((x) => parseFloat(x.sisa_kuota_tahunan) >= 10);
+          const high = userList.filter((x) => parseFloat(x.sisa_kuota_tahunan) >= 10);
           setHighQuotaUsers(high);
         }
       } catch (err) {
@@ -64,6 +74,9 @@ export default function HrdDashboard() {
     setToast(`Notifikasi pengingat hak cuti tahunan berhasil dikirimkan ke ${userName}.`);
     setTimeout(() => setToast(''), 4000);
   }
+
+  const totalPegawaiAktif = users.length > 0 ? users.filter((u) => u.status_aktif).length : 13;
+  const totalDivisi = divisions.length > 0 ? divisions.length : 7;
 
   return (
     <DashboardLayout breadcrumbs={[{ label: 'Dashboard HRD' }]}>
@@ -83,7 +96,7 @@ export default function HrdDashboard() {
             Dashboard Human Resources (HRD)
           </h1>
           <p className="text-xs text-[#4A5565] mt-1">
-            Selamat datang, <span className="font-semibold text-[#0B2545]">{profile?.nama_lengkap || 'Maya Kusuma'}</span>. Monitor persetujuan final cuti dan kapasitas kerja seluruh unit Bank Nusantara.
+            Selamat datang, <span className="font-semibold text-[#0B2545]">{profile?.nama_lengkap || 'Puti Amelia'}</span>. Monitor persetujuan final cuti dan kapasitas kerja seluruh unit Bank Nusantara.
           </p>
         </div>
         <Link href="/hrd/persetujuan" className="btn-primary shrink-0 text-xs">
@@ -105,7 +118,7 @@ export default function HrdDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
         <StatCard
           label="Pengajuan Cuti Bulan Ini"
-          value="21 berkas"
+          value={`${stats.totalRequests || pendingCount || 9} berkas`}
           subtext="seluruh permohonan masuk November 2026"
           icon={CalendarDays}
         />
@@ -117,8 +130,8 @@ export default function HrdDashboard() {
         />
         <StatCard
           label="Karyawan Cuti Bulan Ini"
-          value="9 dari 7 divisi"
-          subtext="total 67 pegawai aktif Bank Nusantara"
+          value={`${stats.onLeaveCount || 0} dari ${totalDivisi} divisi`}
+          subtext={`total ${totalPegawaiAktif} pegawai aktif Bank Nusantara`}
           icon={Users}
         />
       </div>
@@ -133,7 +146,7 @@ export default function HrdDashboard() {
                 Daftar Divisi Bank Nusantara
               </h2>
               <span className="text-xs text-[#4A5565] font-semibold">
-                7 Unit Kerja &bull; 67 Pegawai Aktif
+                {totalDivisi} Unit Kerja &bull; {totalPegawaiAktif} Pegawai Aktif
               </span>
             </div>
 
@@ -159,7 +172,7 @@ export default function HrdDashboard() {
                           {d.nama_ketua || 'Belum Ditetapkan'}
                         </td>
                         <td className="table-cell text-center font-semibold text-[#13315C]">
-                          {d.jumlah_anggota || (d.id === 1 ? 8 : d.id === 2 ? 12 : d.id === 3 ? 15 : d.id === 4 ? 10 : d.id === 5 ? 6 : d.id === 6 ? 9 : 7)} pegawai
+                          {parseInt(d.jumlah_anggota, 10) || 0} pegawai
                         </td>
                         <td className="table-cell text-right">
                           {isAlert ? (

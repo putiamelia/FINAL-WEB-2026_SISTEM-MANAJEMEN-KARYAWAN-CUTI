@@ -22,7 +22,7 @@ export default function KetuaDashboard() {
   const [pendingRequests, setPendingRequests] = useState([]);
   const [members, setMembers] = useState([]);
   const [myRequests, setMyRequests] = useState([]);
-  const [stats, setStats] = useState({ totalMasuk: 14, cutiMingguIni: 2, totalAnggota: 8 });
+  const [stats, setStats] = useState({ totalMasuk: 0, cutiMingguIni: 0, totalAnggota: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function KetuaDashboard() {
             setStats({
               totalMasuk: v.totalMasuk,
               cutiMingguIni: v.cutiMingguIni || 0,
-              totalAnggota: v.totalAnggota || 8,
+              totalAnggota: v.totalAnggota !== undefined ? v.totalAnggota : 0,
             });
           }
         }
