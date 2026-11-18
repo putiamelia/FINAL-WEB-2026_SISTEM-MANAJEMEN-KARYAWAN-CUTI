@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
 import { query } from '@/lib/db';
-import { verifyToken, hashPassword, TOKEN_NAME } from '@/lib/auth';
+import { verifyToken, TOKEN_NAME } from '@/lib/auth';
 
 export async function GET(request) {
   try {
@@ -97,7 +98,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Email atau username sudah terdaftar.' }, { status: 400 });
     }
 
-    const hashed = hashPassword(password);
+    const hashed = await bcrypt.hash(password, 10);
     const kuota = parseFloat(kuota_tahunan_awal) || 12.0;
 
     const insertRes = await query(
@@ -195,7 +196,7 @@ export async function PUT(request) {
     }
 
     if (password && password.trim() !== '') {
-      params.push(hashPassword(password));
+      params.push(await bcrypt.hash(password, 10));
       updateSql += `, password_hash = $${params.length}`;
     }
 

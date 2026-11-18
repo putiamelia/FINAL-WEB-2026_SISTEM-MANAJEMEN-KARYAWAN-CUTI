@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { CalendarCheck, ShieldCheck, Users, AlertCircle } from 'lucide-react';
 
 export default function LoginPage() {
@@ -220,6 +221,13 @@ export default function LoginPage() {
             >
               {loading ? 'Memproses Masuk...' : 'Masuk'}
             </button>
+
+            <div className="text-center pt-2">
+              <span className="text-xs text-[#4A5565]">Belum memiliki akun pegawai? </span>
+              <Link href="/register" className="text-xs font-semibold text-[#13315C] hover:underline">
+                Daftar Akun Baru
+              </Link>
+            </div>
           </form>
 
           {/* Info Kotak Penilai & Catatan Deteksi Role Otomatis */}

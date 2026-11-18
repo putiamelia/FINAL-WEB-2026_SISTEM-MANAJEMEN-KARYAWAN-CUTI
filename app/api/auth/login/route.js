@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
 import { query } from '@/lib/db';
-import { comparePassword, generateToken, TOKEN_NAME } from '@/lib/auth';
+import { generateToken, TOKEN_NAME } from '@/lib/auth';
 
 export async function POST(request) {
   try {
@@ -40,7 +41,14 @@ export async function POST(request) {
       );
     }
 
-    const isMatch = comparePassword(password, user.password_hash);
+    // Verifikasi kata sandi dengan bcrypt.compare (bukan plaintext)
+    let isMatch = false;
+    try {
+      isMatch = await bcrypt.compare(password, user.password_hash);
+    } catch (bcryptErr) {
+      isMatch = false;
+    }
+
     if (!isMatch) {
       return NextResponse.json(
         { error: 'Kata sandi yang Anda masukkan salah.' },

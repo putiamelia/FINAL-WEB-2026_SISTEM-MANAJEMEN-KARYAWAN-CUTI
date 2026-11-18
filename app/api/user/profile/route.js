@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
 import { query } from '@/lib/db';
-import { verifyToken, hashPassword, TOKEN_NAME } from '@/lib/auth';
+import { verifyToken, TOKEN_NAME } from '@/lib/auth';
 
 export async function GET(request) {
   try {
@@ -56,7 +57,7 @@ export async function PUT(request) {
     }
 
     if (password && password.trim() !== '') {
-      params.push(hashPassword(password));
+      params.push(await bcrypt.hash(password, 10));
       sql += `, password_hash = $${params.length}`;
     }
 
