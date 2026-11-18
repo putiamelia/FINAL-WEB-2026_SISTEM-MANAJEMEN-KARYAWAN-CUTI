@@ -81,7 +81,7 @@ export default function KetuaDashboard() {
             Dashboard Ketua Divisi {profile?.nama_divisi || 'Layanan Nasabah'}
           </h1>
           <p className="text-xs text-[#4A5565] mt-1">
-            Selamat datang, <span className="font-semibold text-[#0B2545]">{profile?.nama_lengkap || 'Bagus Santoso'}</span>. Kelola verifikasi cuti anggota tim dan pantau jadwal kerja divisi Anda.
+            Selamat datang, <span className="font-semibold text-[#0B2545]">{profile?.nama_lengkap || 'Dylan Dwiputra'}</span>. Kelola verifikasi cuti anggota tim dan pantau jadwal kerja divisi Anda.
           </p>
         </div>
         <Link href="/ketua/pengajuan" className="btn-primary shrink-0 text-xs">

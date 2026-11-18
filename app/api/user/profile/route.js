@@ -13,11 +13,14 @@ export async function GET(request) {
 
     const res = await query(
       `SELECT u.id, u.username, u.email, u.nama_lengkap, u.role, u.jabatan,
-              u.divisi_id, d.nama_divisi, u.kuota_tahunan_awal, u.sisa_kuota_tahunan,
+              u.divisi_id, d.nama_divisi,
+              COALESCE(k.nama_lengkap, (SELECT nama_lengkap FROM users WHERE divisi_id = u.divisi_id AND role = 'Ketua Divisi' LIMIT 1), 'Dylan Dwiputra') as nama_ketua_divisi,
+              u.kuota_tahunan_awal, u.sisa_kuota_tahunan,
               u.kuota_terpakai, u.nomor_telepon, u.alamat, u.tanggal_bergabung,
               u.foto_profil, u.created_at
        FROM users u
        LEFT JOIN divisions d ON u.divisi_id = d.id
+       LEFT JOIN users k ON d.ketua_id = k.id
        WHERE u.id = $1`,
       [decoded.id]
     );

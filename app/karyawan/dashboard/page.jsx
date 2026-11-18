@@ -151,7 +151,7 @@ export default function KaryawanDashboard() {
         <StatCard
           label="Divisi & Ketua"
           value={profile?.nama_divisi || 'Layanan Nasabah'}
-          subtext={`Ketua: Bagus Santoso`}
+          subtext={`Ketua: ${profile?.nama_ketua_divisi || 'Dylan Dwiputra'}`}
           icon={Building2}
         />
       </div>
