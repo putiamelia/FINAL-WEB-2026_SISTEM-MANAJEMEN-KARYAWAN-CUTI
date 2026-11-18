@@ -22,6 +22,7 @@ export default function KetuaDashboard() {
   const [pendingRequests, setPendingRequests] = useState([]);
   const [members, setMembers] = useState([]);
   const [myRequests, setMyRequests] = useState([]);
+  const [stats, setStats] = useState({ totalMasuk: 14, cutiMingguIni: 2, totalAnggota: 8 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -42,10 +43,16 @@ export default function KetuaDashboard() {
         if (verifyRes.ok) {
           const v = await verifyRes.json();
           setPendingRequests(v.requests || []);
+          if (v.totalMasuk !== undefined) {
+            setStats({
+              totalMasuk: v.totalMasuk,
+              cutiMingguIni: v.cutiMingguIni || 0,
+              totalAnggota: v.totalAnggota || 8,
+            });
+          }
         }
         if (userRes.ok) {
           const u = await userRes.json();
-          // Filter anggota divisi yang sama
           setMembers(u.users || []);
         }
         if (myRes.ok) {
@@ -61,10 +68,10 @@ export default function KetuaDashboard() {
     loadData();
   }, []);
 
-  const totalMasuk = 14;
-  const pendingCount = pendingRequests.length || 3;
-  const cutiMingguIni = 2;
-  const totalAnggotaDivisi = 8;
+  const pendingCount = pendingRequests.length;
+  const totalMasuk = stats.totalMasuk;
+  const totalAnggotaDivisi = members.length > 0 ? members.length : stats.totalAnggota;
+  const cutiMingguIni = stats.cutiMingguIni;
 
   return (
     <DashboardLayout breadcrumbs={[{ label: 'Dashboard Ketua Divisi' }]}>
@@ -94,13 +101,13 @@ export default function KetuaDashboard() {
         <StatCard
           label="Pending Verifikasi"
           value={`${pendingCount} berkas`}
-          subtext="memerlukan tindakan verifikasi Anda"
+          subtext={pendingCount > 0 ? "memerlukan tindakan verifikasi Anda" : "semua permohonan telah diverifikasi"}
           icon={CheckSquare}
         />
         <StatCard
           label="Sedang Cuti Minggu Ini"
           value={`${cutiMingguIni} dari ${totalAnggotaDivisi} orang`}
-          subtext="kehadiran divisi terjaga 75%"
+          subtext={`kehadiran divisi terjaga ${totalAnggotaDivisi > 0 ? Math.round(((totalAnggotaDivisi - cutiMingguIni) / totalAnggotaDivisi) * 100) : 100}%`}
           icon={Users}
         />
       </div>
@@ -113,7 +120,7 @@ export default function KetuaDashboard() {
               Daftar Anggota Divisi {profile?.nama_divisi || 'Layanan Nasabah'}
             </h2>
             <span className="text-xs text-[#4A5565] font-semibold">
-              Total {members.filter(m => m.divisi_id === profile?.divisi_id).length || 8} Pegawai
+              Total {members.length > 0 ? members.length : 8} Pegawai
             </span>
           </div>
 
@@ -128,44 +135,52 @@ export default function KetuaDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6EAF0] text-xs">
-                {members
-                  .filter((m) => m.divisi_id === profile?.divisi_id)
-                  .map((m) => {
-                    // Cek apakah ada pengajuan aktif minggu ini
-                    const isLeave = m.id === 5 || m.id === 6; // Yusuf / Dewi contoh
-                    return (
-                      <tr key={m.id} className="hover:bg-[#FBFAF7] transition-colors">
-                        <td className="table-cell">
-                          <div className="flex items-center gap-3">
-                            <img
-                              src={m.foto_profil || '/assets/foto-karyawan.png'}
-                              alt={m.nama_lengkap}
-                              className="w-9 h-9 rounded-full object-cover border border-[#D9DEE5]"
-                            />
-                            <div>
-                              <p className="font-bold text-[#1B2430]">{m.nama_lengkap}</p>
-                              <p className="text-[11px] text-[#4A5565]">{m.email}</p>
+                {members.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="py-8 text-center text-gray-400">
+                      Memuat data anggota divisi...
+                    </td>
+                  </tr>
+                ) : (
+                  members
+                    .filter((m) => !profile?.divisi_id || m.divisi_id === profile?.divisi_id)
+                    .map((m) => {
+                      // Cek apakah ada pengajuan aktif minggu ini
+                      const isLeave = m.id === 5 || m.id === 6; // Yusuf / Dewi contoh
+                      return (
+                        <tr key={m.id} className="hover:bg-[#FBFAF7] transition-colors">
+                          <td className="table-cell">
+                            <div className="flex items-center gap-3">
+                              <img
+                                src={m.foto_profil || '/assets/foto-karyawan.png'}
+                                alt={m.nama_lengkap}
+                                className="w-9 h-9 rounded-full object-cover border border-[#D9DEE5]"
+                              />
+                              <div>
+                                <p className="font-bold text-[#1B2430]">{m.nama_lengkap}</p>
+                                <p className="text-[11px] text-[#4A5565]">{m.email}</p>
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="table-cell text-[#4A5565]">{m.jabatan || 'Staff'}</td>
-                        <td className="table-cell">
-                          {isLeave ? (
-                            <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#FEF3C7] text-[#92400E]">
-                              Cuti Terjadwal
-                            </span>
-                          ) : (
-                            <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#DCFCE7] text-[#14532D]">
-                              Hadir / Aktif
-                            </span>
-                          )}
-                        </td>
-                        <td className="table-cell font-semibold text-[#13315C]">
-                          {formatDecimal(m.sisa_kuota_tahunan)} hari
-                        </td>
-                      </tr>
-                    );
-                  })}
+                          </td>
+                          <td className="table-cell text-[#4A5565]">{m.jabatan || 'Staff'}</td>
+                          <td className="table-cell">
+                            {isLeave ? (
+                              <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#FEF3C7] text-[#92400E]">
+                                Cuti Terjadwal
+                              </span>
+                            ) : (
+                              <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#DCFCE7] text-[#14532D]">
+                                Hadir / Aktif
+                              </span>
+                            )}
+                          </td>
+                          <td className="table-cell font-semibold text-[#13315C]">
+                            {formatDecimal(m.sisa_kuota_tahunan)} hari
+                          </td>
+                        </tr>
+                      );
+                    })
+                )}
               </tbody>
             </table>
           </div>

@@ -9,8 +9,8 @@ export async function GET(request) {
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const decoded = verifyToken(token);
-    if (!decoded || (decoded.role !== 'Admin' && decoded.role !== 'HRD')) {
-      return NextResponse.json({ error: 'Akses khusus Admin dan HRD' }, { status: 403 });
+    if (!decoded || (decoded.role !== 'Admin' && decoded.role !== 'HRD' && decoded.role !== 'Ketua Divisi')) {
+      return NextResponse.json({ error: 'Akses khusus Admin, HRD, dan Ketua Divisi' }, { status: 403 });
     }
 
     const { searchParams } = new URL(request.url);
@@ -28,6 +28,11 @@ export async function GET(request) {
       LEFT JOIN divisions d ON u.divisi_id = d.id
       WHERE 1=1
     `;
+
+    // Jika Ketua Divisi, batasi query khusus untuk anggota divisi miliknya
+    if (decoded.role === 'Ketua Divisi' && decoded.divisi_id) {
+      sql += ` AND u.divisi_id = ${parseInt(decoded.divisi_id, 10)}`;
+    }
     const params = [];
 
     if (role && role !== 'Semua') {

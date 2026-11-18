@@ -35,7 +35,39 @@ export async function GET(request) {
       [ketuaDivisiId, decoded.id]
     );
 
-    return NextResponse.json({ requests: res.rows });
+    // Ambil statistik real-time divisi
+    const totalMasukRes = await query(
+      `SELECT COUNT(*) as total 
+       FROM leave_requests r 
+       JOIN users u ON r.user_id = u.id 
+       WHERE u.divisi_id = $1 AND r.user_id != $2`,
+      [ketuaDivisiId, decoded.id]
+    );
+
+    const cutiMingguIniRes = await query(
+      `SELECT COUNT(DISTINCT r.user_id) as total 
+       FROM leave_requests r 
+       JOIN users u ON r.user_id = u.id 
+       WHERE u.divisi_id = $1 
+         AND r.status IN ('Approved by Leader', 'Approved')
+         AND r.tanggal_mulai <= CURRENT_DATE + 7
+         AND r.tanggal_selesai >= CURRENT_DATE - 7`,
+      [ketuaDivisiId]
+    );
+
+    const totalAnggotaRes = await query(
+      `SELECT COUNT(*) as total 
+       FROM users 
+       WHERE divisi_id = $1 AND status_aktif = TRUE`,
+      [ketuaDivisiId]
+    );
+
+    return NextResponse.json({ 
+      requests: res.rows,
+      totalMasuk: parseInt(totalMasukRes.rows[0]?.total || '0', 10),
+      cutiMingguIni: parseInt(cutiMingguIniRes.rows[0]?.total || '0', 10),
+      totalAnggota: parseInt(totalAnggotaRes.rows[0]?.total || '0', 10),
+    });
   } catch (err) {
     console.error('Error fetching verification list:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });
