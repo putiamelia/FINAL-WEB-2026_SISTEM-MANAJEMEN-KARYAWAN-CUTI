@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { verifyToken, TOKEN_NAME } from '@/lib/auth';
+import { getPositionsByDivisionName } from '@/lib/positions';
 
 export async function GET(request) {
   try {
@@ -18,7 +19,33 @@ export async function GET(request) {
       ORDER BY d.nama_divisi ASC
     `;
     const res = await query(sql);
-    return NextResponse.json({ divisions: res.rows });
+
+    // Ambil jabatan yang ada di users per divisi
+    const dbPositionsByDiv = {};
+    try {
+      const posRes = await query(
+        `SELECT DISTINCT divisi_id, jabatan FROM users WHERE jabatan IS NOT NULL AND TRIM(jabatan) != ''`
+      );
+      posRes.rows.forEach((r) => {
+        if (!dbPositionsByDiv[r.divisi_id]) dbPositionsByDiv[r.divisi_id] = [];
+        if (!dbPositionsByDiv[r.divisi_id].includes(r.jabatan)) {
+          dbPositionsByDiv[r.divisi_id].push(r.jabatan);
+        }
+      });
+    } catch (e) {
+      // ignore
+    }
+
+    const divisions = res.rows.map((d) => {
+      const standardPositions = getPositionsByDivisionName(d.nama_divisi);
+      const fromDb = dbPositionsByDiv[d.id] || [];
+      return {
+        ...d,
+        positions: Array.from(new Set([...standardPositions, ...fromDb])),
+      };
+    });
+
+    return NextResponse.json({ divisions });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }

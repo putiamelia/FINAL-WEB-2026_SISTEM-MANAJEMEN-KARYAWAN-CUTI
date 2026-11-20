@@ -1,14 +1,42 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { query } from '@/lib/db';
+import { getPositionsByDivisionName } from '@/lib/positions';
 
-// GET: Ambil daftar divisi untuk dropdown pilihan divisi saat registrasi
+// GET: Ambil daftar divisi beserta daftar jabatan terkait untuk dropdown saat registrasi
 export async function GET() {
   try {
     const res = await query(
       `SELECT id, nama_divisi FROM divisions ORDER BY nama_divisi ASC`
     );
-    return NextResponse.json({ divisions: res.rows });
+
+    // Ambil jabatan yang sudah ada di database per divisi
+    const dbPositionsByDiv = {};
+    try {
+      const posRes = await query(
+        `SELECT DISTINCT divisi_id, jabatan FROM users WHERE jabatan IS NOT NULL AND TRIM(jabatan) != ''`
+      );
+      posRes.rows.forEach((r) => {
+        if (!dbPositionsByDiv[r.divisi_id]) dbPositionsByDiv[r.divisi_id] = [];
+        if (!dbPositionsByDiv[r.divisi_id].includes(r.jabatan)) {
+          dbPositionsByDiv[r.divisi_id].push(r.jabatan);
+        }
+      });
+    } catch (e) {
+      console.warn('Gagal memuat distinct jabatan dari users:', e.message);
+    }
+
+    const divisionsWithPositions = res.rows.map((d) => {
+      const standardPositions = getPositionsByDivisionName(d.nama_divisi);
+      const fromDb = dbPositionsByDiv[d.id] || [];
+      const combined = Array.from(new Set([...standardPositions, ...fromDb]));
+      return {
+        ...d,
+        positions: combined,
+      };
+    });
+
+    return NextResponse.json({ divisions: divisionsWithPositions });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }

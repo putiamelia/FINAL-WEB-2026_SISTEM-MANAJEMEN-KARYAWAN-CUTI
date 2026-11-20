@@ -15,6 +15,7 @@ import {
   UploadCloud,
 } from 'lucide-react';
 import { formatDateIndo, formatDecimal } from '@/lib/utils';
+import { getPositionsForDivision, ROLE_DEFAULT_POSITIONS, DEFAULT_POSITIONS } from '@/lib/positions';
 
 export default function AdminPenggunaPage() {
   const [users, setUsers] = useState([]);
@@ -79,6 +80,8 @@ export default function AdminPenggunaPage() {
   function handleOpenCreate() {
     setIsEdit(false);
     setErrorMsg('');
+    const firstDiv = divisions[0];
+    const positions = getPositionsForDivision(firstDiv);
     setFormData({
       id: null,
       username: '',
@@ -86,8 +89,8 @@ export default function AdminPenggunaPage() {
       password: 'password123',
       nama_lengkap: '',
       role: 'Karyawan',
-      jabatan: 'Staff',
-      divisi_id: divisions[0]?.id ? String(divisions[0].id) : '',
+      jabatan: positions[0] || 'Staff',
+      divisi_id: firstDiv?.id ? String(firstDiv.id) : '',
       kuota_tahunan_awal: 12.0,
       nomor_telepon: '',
       alamat: '',
@@ -95,6 +98,38 @@ export default function AdminPenggunaPage() {
       foto_profil: '/assets/foto-karyawan.png',
     });
     setModalOpen(true);
+  }
+
+  function handleModalDivisionChange(newDivId) {
+    const selectedDiv = divisions.find((d) => String(d.id) === String(newDivId));
+    let newJabatan = '';
+    if (selectedDiv) {
+      const positions = getPositionsForDivision(selectedDiv);
+      newJabatan = positions[0] || 'Staff';
+    } else {
+      const rolePositions = ROLE_DEFAULT_POSITIONS[formData.role] || DEFAULT_POSITIONS;
+      newJabatan = rolePositions[0] || 'Staff';
+    }
+    setFormData((prev) => ({
+      ...prev,
+      divisi_id: newDivId,
+      jabatan: newJabatan,
+    }));
+  }
+
+  function handleModalRoleChange(newRole) {
+    setFormData((prev) => {
+      let updatedJabatan = prev.jabatan;
+      if (!prev.divisi_id) {
+        const rolePositions = ROLE_DEFAULT_POSITIONS[newRole] || DEFAULT_POSITIONS;
+        updatedJabatan = rolePositions[0] || 'Staff';
+      }
+      return {
+        ...prev,
+        role: newRole,
+        jabatan: updatedJabatan,
+      };
+    });
   }
 
   function handleOpenEdit(user) {
@@ -187,6 +222,11 @@ export default function AdminPenggunaPage() {
     }
     return true;
   });
+
+  const modalSelectedDiv = divisions.find((d) => String(d.id) === String(formData.divisi_id));
+  const modalPositions = modalSelectedDiv
+    ? getPositionsForDivision(modalSelectedDiv)
+    : (ROLE_DEFAULT_POSITIONS[formData.role] || DEFAULT_POSITIONS);
 
   return (
     <DashboardLayout
@@ -511,7 +551,7 @@ export default function AdminPenggunaPage() {
                   </label>
                   <select
                     value={formData.role}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                    onChange={(e) => handleModalRoleChange(e.target.value)}
                     className="input-field"
                   >
                     <option value="Karyawan">Karyawan</option>
@@ -529,7 +569,7 @@ export default function AdminPenggunaPage() {
                   </label>
                   <select
                     value={formData.divisi_id}
-                    onChange={(e) => setFormData({ ...formData, divisi_id: e.target.value })}
+                    onChange={(e) => handleModalDivisionChange(e.target.value)}
                     className="input-field"
                   >
                     <option value="">-- Tanpa Divisi --</option>
@@ -542,15 +582,22 @@ export default function AdminPenggunaPage() {
                 </div>
                 <div>
                   <label className="block font-semibold text-[#1B2430] uppercase mb-1">
-                    Jabatan
+                    Jabatan / Posisi *
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={formData.jabatan}
                     onChange={(e) => setFormData({ ...formData, jabatan: e.target.value })}
-                    placeholder="Contoh: Customer Service"
                     className="input-field"
-                  />
+                  >
+                    {formData.jabatan && !modalPositions.includes(formData.jabatan) && (
+                      <option value={formData.jabatan}>{formData.jabatan}</option>
+                    )}
+                    {modalPositions.map((pos) => (
+                      <option key={pos} value={pos}>
+                        {pos}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 

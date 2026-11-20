@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { UserPlus, ArrowLeft, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { getPositionsForDivision } from '@/lib/positions';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -12,7 +13,7 @@ export default function RegisterPage() {
     username: '',
     email: '',
     divisi_id: '',
-    jabatan: 'Staff',
+    jabatan: '',
     password: '',
     confirmPassword: '',
     nomor_telepon: '',
@@ -30,9 +31,16 @@ export default function RegisterPage() {
         const res = await fetch('/api/auth/register');
         if (res.ok) {
           const data = await res.json();
-          setDivisions(data.divisions || []);
-          if (data.divisions && data.divisions.length > 0) {
-            setFormData((prev) => ({ ...prev, divisi_id: data.divisions[0].id.toString() }));
+          const divs = data.divisions || [];
+          setDivisions(divs);
+          if (divs.length > 0) {
+            const firstDiv = divs[0];
+            const positions = getPositionsForDivision(firstDiv);
+            setFormData((prev) => ({
+              ...prev,
+              divisi_id: firstDiv.id.toString(),
+              jabatan: positions[0] || 'Staff',
+            }));
           }
         }
       } catch (err) {
@@ -41,6 +49,17 @@ export default function RegisterPage() {
     }
     loadDivisions();
   }, []);
+
+  function handleDivisionChange(e) {
+    const newDivId = e.target.value;
+    const selectedDiv = divisions.find((d) => String(d.id) === String(newDivId));
+    const positions = getPositionsForDivision(selectedDiv);
+    setFormData((prev) => ({
+      ...prev,
+      divisi_id: newDivId,
+      jabatan: positions[0] || 'Staff',
+    }));
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -93,6 +112,9 @@ export default function RegisterPage() {
       setLoading(false);
     }
   }
+
+  const selectedDiv = divisions.find((d) => String(d.id) === String(formData.divisi_id));
+  const availablePositions = getPositionsForDivision(selectedDiv);
 
   return (
     <div className="min-h-screen bg-[#F1F3F6] flex flex-col justify-center py-10 px-4 sm:px-6 lg:px-8">
@@ -183,7 +205,7 @@ export default function RegisterPage() {
                 <select
                   required
                   value={formData.divisi_id}
-                  onChange={(e) => setFormData({ ...formData, divisi_id: e.target.value })}
+                  onChange={handleDivisionChange}
                   className="input-field text-xs h-10 w-full"
                 >
                   {divisions.map((d) => (
@@ -197,15 +219,20 @@ export default function RegisterPage() {
               {/* Jabatan */}
               <div>
                 <label className="block font-semibold text-[#1B2430] mb-1">
-                  Jabatan / Posisi
+                  Jabatan / Posisi <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
-                  placeholder="cth. Customer Service Staff"
+                <select
+                  required
                   value={formData.jabatan}
                   onChange={(e) => setFormData({ ...formData, jabatan: e.target.value })}
                   className="input-field text-xs h-10 w-full"
-                />
+                >
+                  {availablePositions.map((pos) => (
+                    <option key={pos} value={pos}>
+                      {pos}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
