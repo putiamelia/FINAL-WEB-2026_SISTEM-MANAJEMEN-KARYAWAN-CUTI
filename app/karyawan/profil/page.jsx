@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { User, Mail, Phone, MapPin, Building2, Shield, Calendar, Check, AlertCircle } from 'lucide-react';
-import { formatDecimal, formatDateIndo } from '@/lib/utils';
+import { formatDecimal, formatDateIndo, getAvatarUrl } from '@/lib/utils';
 
 export default function ProfilKaryawanPage() {
   const [profile, setProfile] = useState(null);
@@ -132,9 +132,9 @@ export default function ProfilKaryawanPage() {
           <div className="bg-white rounded-md border border-[#D9DEE5] p-6 text-center shadow-sm">
             <div className="relative w-24 h-24 mx-auto mb-4 group cursor-pointer">
               <img
-                src={profile?.foto_profil || '/assets/foto-karyawati.png'}
+                src={getAvatarUrl(profile?.foto_profil)}
                 alt={profile?.nama_lengkap || 'Karyawan'}
-                className="w-24 h-24 rounded-full object-cover border-2 border-[#13315C] shadow-sm"
+                className="w-24 h-24 rounded-full object-cover border-2 border-[#13315C] shadow-sm bg-[#E2E8F0]"
               />
               <label className="absolute inset-0 bg-black/50 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white text-[10px] font-semibold">
                 <span>Ganti Foto</span>

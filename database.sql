@@ -47,7 +47,7 @@ CREATE TABLE users (
     alamat TEXT,
     status_aktif BOOLEAN DEFAULT TRUE,
     tanggal_bergabung DATE DEFAULT CURRENT_DATE,
-    foto_profil TEXT DEFAULT '/assets/foto-karyawan.png',
+    foto_profil TEXT DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

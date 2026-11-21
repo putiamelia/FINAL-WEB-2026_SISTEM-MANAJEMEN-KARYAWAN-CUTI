@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ApprovalModal from '@/components/ApprovalModal';
 import { CheckSquare, CheckCircle, XCircle, Clock, User, Calendar, AlertCircle } from 'lucide-react';
-import { formatDateRange, formatDecimal, formatDateIndo } from '@/lib/utils';
+import { formatDateRange, formatDecimal, formatDateIndo, getAvatarUrl } from '@/lib/utils';
 
 export default function VerifikasiKetuaPage() {
   const [requests, setRequests] = useState([]);
@@ -112,9 +112,9 @@ export default function VerifikasiKetuaPage() {
                 <div className="flex items-start justify-between pb-4 border-b border-[#E6EAF0]">
                   <div className="flex items-center gap-3">
                     <img
-                      src={r.foto_profil || '/assets/foto-karyawan.png'}
+                      src={getAvatarUrl(r.foto_profil)}
                       alt={r.nama_lengkap}
-                      className="w-12 h-12 rounded-full object-cover border border-[#D9DEE5]"
+                      className="w-12 h-12 rounded-full object-cover border border-[#D9DEE5] bg-[#E2E8F0]"
                     />
                     <div>
                       <h2 className="font-bold text-sm text-[#0B2545]">{r.nama_lengkap}</h2>

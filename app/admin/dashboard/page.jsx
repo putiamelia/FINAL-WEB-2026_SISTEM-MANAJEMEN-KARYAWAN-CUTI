@@ -14,7 +14,7 @@ import {
   ChevronRight,
   Layers,
 } from 'lucide-react';
-import { formatDateIndo, formatDecimal } from '@/lib/utils';
+import { formatDateIndo, formatDecimal, getAvatarUrl } from '@/lib/utils';
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
@@ -156,9 +156,9 @@ export default function AdminDashboard() {
                       <td className="table-cell">
                         <div className="flex items-center gap-2.5">
                           <img
-                            src={u.foto_profil || '/assets/foto-karyawan.png'}
+                            src={getAvatarUrl(u.foto_profil)}
                             alt={u.nama_lengkap}
-                            className="w-8 h-8 rounded-full object-cover border border-[#D9DEE5]"
+                            className="w-8 h-8 rounded-full object-cover border border-[#D9DEE5] bg-[#E2E8F0]"
                           />
                           <span className="font-bold text-[#1B2430]">{u.nama_lengkap}</span>
                         </div>

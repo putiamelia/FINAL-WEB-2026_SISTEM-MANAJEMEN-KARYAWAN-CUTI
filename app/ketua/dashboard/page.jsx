@@ -15,7 +15,7 @@ import {
   Clock,
   ArrowUpRight,
 } from 'lucide-react';
-import { formatDateRange, formatDecimal } from '@/lib/utils';
+import { formatDateRange, formatDecimal, getAvatarUrl } from '@/lib/utils';
 
 export default function KetuaDashboard() {
   const [profile, setProfile] = useState(null);
@@ -152,9 +152,9 @@ export default function KetuaDashboard() {
                           <td className="table-cell">
                             <div className="flex items-center gap-3">
                               <img
-                                src={m.foto_profil || '/assets/foto-karyawan.png'}
+                                src={getAvatarUrl(m.foto_profil)}
                                 alt={m.nama_lengkap}
-                                className="w-9 h-9 rounded-full object-cover border border-[#D9DEE5]"
+                                className="w-9 h-9 rounded-full object-cover border border-[#D9DEE5] bg-[#E2E8F0]"
                               />
                               <div>
                                 <p className="font-bold text-[#1B2430]">{m.nama_lengkap}</p>

@@ -19,6 +19,7 @@ import {
   X,
   FileText,
 } from 'lucide-react';
+import { getAvatarUrl } from '@/lib/utils';
 
 export default function Sidebar({ user }) {
   const pathname = usePathname();
@@ -176,9 +177,9 @@ export default function Sidebar({ user }) {
         <div className="bg-[#13315C] rounded p-3 flex items-center justify-between">
           <div className="flex items-center gap-3 min-w-0">
             <img
-              src={user?.foto_profil || '/assets/foto-karyawan.png'}
+              src={getAvatarUrl(user?.foto_profil)}
               alt={user?.nama_lengkap || 'User'}
-              className="w-10 h-10 rounded-full object-cover shrink-0 border border-white/20"
+              className="w-10 h-10 rounded-full object-cover shrink-0 border border-white/20 bg-[#E2E8F0]"
             />
             <div className="min-w-0">
               <p className="text-sm font-semibold truncate text-white">

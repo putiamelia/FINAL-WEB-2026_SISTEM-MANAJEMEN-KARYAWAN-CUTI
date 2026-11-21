@@ -14,7 +14,7 @@ import {
   CheckCircle,
   UploadCloud,
 } from 'lucide-react';
-import { formatDateIndo, formatDecimal } from '@/lib/utils';
+import { formatDateIndo, formatDecimal, getAvatarUrl } from '@/lib/utils';
 import { getPositionsForDivision, ROLE_DEFAULT_POSITIONS, DEFAULT_POSITIONS } from '@/lib/positions';
 
 export default function AdminPenggunaPage() {
@@ -95,7 +95,7 @@ export default function AdminPenggunaPage() {
       nomor_telepon: '',
       alamat: '',
       status_aktif: true,
-      foto_profil: '/assets/foto-karyawan.png',
+      foto_profil: '',
     });
     setModalOpen(true);
   }
@@ -148,7 +148,7 @@ export default function AdminPenggunaPage() {
       nomor_telepon: user.nomor_telepon || '',
       alamat: user.alamat || '',
       status_aktif: user.status_aktif,
-      foto_profil: user.foto_profil || '/assets/foto-karyawan.png',
+      foto_profil: (user.foto_profil && user.foto_profil.startsWith('/uploads/')) ? user.foto_profil : '',
     });
     setModalOpen(true);
   }
@@ -350,9 +350,9 @@ export default function AdminPenggunaPage() {
                     <td className="table-cell">
                       <div className="flex items-center gap-3">
                         <img
-                          src={u.foto_profil || '/assets/foto-karyawan.png'}
+                          src={getAvatarUrl(u.foto_profil)}
                           alt={u.nama_lengkap}
-                          className="w-9 h-9 rounded-full object-cover border border-[#D9DEE5]"
+                          className="w-9 h-9 rounded-full object-cover border border-[#D9DEE5] bg-[#E2E8F0]"
                         />
                         <div>
                           <p className="font-bold text-[#1B2430]">{u.nama_lengkap}</p>
@@ -436,9 +436,9 @@ export default function AdminPenggunaPage() {
             <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               {/* Unggah Foto Profil */}
               <div className="flex items-center gap-4 p-3.5 bg-gray-50 rounded-md border border-[#D9DEE5]">
-                <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[#13315C] bg-white shrink-0 shadow-sm">
+                <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[#13315C] bg-[#E2E8F0] shrink-0 shadow-sm flex items-center justify-center">
                   <img
-                    src={formData.foto_profil || '/assets/foto-karyawan.png'}
+                    src={getAvatarUrl(formData.foto_profil)}
                     alt="Foto Profil"
                     className="w-full h-full object-cover"
                   />
@@ -495,7 +495,7 @@ export default function AdminPenggunaPage() {
                     {formData.foto_profil && formData.foto_profil.startsWith('/uploads/') && (
                       <button
                         type="button"
-                        onClick={() => setFormData({ ...formData, foto_profil: '/assets/foto-karyawan.png' })}
+                        onClick={() => setFormData({ ...formData, foto_profil: '' })}
                         className="text-[11px] text-red-600 hover:text-red-700 underline px-1 py-1"
                       >
                         Hapus Foto

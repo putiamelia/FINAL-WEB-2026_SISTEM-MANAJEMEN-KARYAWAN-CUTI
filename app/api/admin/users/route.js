@@ -87,7 +87,7 @@ export async function POST(request) {
       nomor_telepon,
       alamat,
       tanggal_bergabung,
-      foto_profil = '/assets/foto-karyawan.png',
+      foto_profil = null,
     } = body;
 
     if (!username || !email || !password || !nama_lengkap || !role) {
@@ -125,7 +125,7 @@ export async function POST(request) {
         nomor_telepon || null,
         alamat || null,
         tanggal_bergabung || new Date().toISOString().slice(0, 10),
-        foto_profil || '/assets/foto-karyawan.png',
+        foto_profil || null,
       ]
     );
 
@@ -196,7 +196,7 @@ export async function PUT(request) {
     ];
 
     if (foto_profil !== undefined) {
-      params.push(foto_profil);
+      params.push(foto_profil ? foto_profil : null);
       updateSql += `, foto_profil = $${params.length}`;
     }
 

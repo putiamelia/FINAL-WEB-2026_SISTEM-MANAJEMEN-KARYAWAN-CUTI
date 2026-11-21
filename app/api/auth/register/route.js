@@ -95,7 +95,7 @@ export async function POST(request) {
         username, email, password_hash, nama_lengkap, role, jabatan,
         divisi_id, kuota_tahunan_awal, sisa_kuota_tahunan, kuota_terpakai,
         nomor_telepon, alamat, status_aktif, tanggal_bergabung, foto_profil
-      ) VALUES ($1, $2, $3, $4, 'Karyawan', $5, $6, $7, $7, 0, $8, $9, TRUE, CURRENT_DATE, '/assets/foto-karyawan.png')
+      ) VALUES ($1, $2, $3, $4, 'Karyawan', $5, $6, $7, $7, 0, $8, $9, TRUE, CURRENT_DATE, NULL)
       RETURNING id, username, email, nama_lengkap, role, jabatan, sisa_kuota_tahunan
     `;
 

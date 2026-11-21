@@ -13,7 +13,7 @@ import {
   ShieldCheck,
   FileText,
 } from 'lucide-react';
-import { formatDateRange, formatDecimal, formatDateIndo } from '@/lib/utils';
+import { formatDateRange, formatDecimal, formatDateIndo, getAvatarUrl } from '@/lib/utils';
 
 export default function PersetujuanFinalHrdPage() {
   const [requests, setRequests] = useState([]);
@@ -195,9 +195,9 @@ export default function PersetujuanFinalHrdPage() {
                         className="w-4 h-4 text-[#13315C] rounded border-[#D9DEE5] focus:ring-[#13315C]"
                       />
                       <img
-                        src={r.foto_profil || '/assets/foto-karyawati.png'}
+                        src={getAvatarUrl(r.foto_profil)}
                         alt={r.nama_lengkap}
-                        className="w-11 h-11 rounded-full object-cover border border-[#D9DEE5]"
+                        className="w-11 h-11 rounded-full object-cover border border-[#D9DEE5] bg-[#E2E8F0]"
                       />
                       <div>
                         <h2 className="font-bold text-sm text-[#0B2545]">{r.nama_lengkap}</h2>
