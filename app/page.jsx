@@ -7,8 +7,9 @@ import { CalendarCheck, ShieldCheck, Users, AlertCircle } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [identifier, setIdentifier] = useState('karis.kabanga');
-  const [password, setPassword] = useState('password123');
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
+  const [activeRole, setActiveRole] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -51,7 +52,8 @@ export default function LoginPage() {
     }
   }
 
-  function setQuickAccount(user, pass) {
+  function setQuickAccount(roleName, user, pass) {
+    setActiveRole(roleName);
     setIdentifier(user);
     setPassword(pass);
     setErrorMsg('');
@@ -171,8 +173,11 @@ export default function LoginPage() {
                 type="text"
                 required
                 value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
-                placeholder="Contoh: karis.kabanga"
+                onChange={(e) => {
+                  setIdentifier(e.target.value);
+                  setActiveRole('');
+                }}
+                placeholder="Masukkan email atau username..."
                 className="input-field h-11 sm:h-12 text-sm sm:text-base px-3.5 w-full"
               />
             </div>
@@ -189,8 +194,11 @@ export default function LoginPage() {
                 type="password"
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••••••"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setActiveRole('');
+                }}
+                placeholder="Masukkan kata sandi..."
                 className="input-field h-11 sm:h-12 text-sm sm:text-base px-3.5 w-full"
               />
             </div>
@@ -246,32 +254,48 @@ export default function LoginPage() {
             <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
               <button
                 type="button"
-                onClick={() => setQuickAccount('karis.kabanga', 'password123')}
-                className="p-2.5 rounded text-left border border-[#D9DEE5] hover:bg-[#F1F3F6] transition-colors"
+                onClick={() => setQuickAccount('Karyawan', 'karis.kabanga', 'password123')}
+                className={`p-2.5 rounded text-left border transition-all ${
+                  activeRole === 'Karyawan'
+                    ? 'border-[#13315C] bg-[#EEF1F5] ring-2 ring-[#13315C]/20 shadow-sm'
+                    : 'border-[#D9DEE5] hover:bg-[#F1F3F6]'
+                }`}
               >
                 <span className="font-bold text-[#13315C] block">Karyawan</span>
                 <span className="text-xs text-[#4A5565]">karis.kabanga</span>
               </button>
               <button
                 type="button"
-                onClick={() => setQuickAccount('dylan.dwiputra', 'password123')}
-                className="p-2.5 rounded text-left border border-[#D9DEE5] hover:bg-[#F1F3F6] transition-colors"
+                onClick={() => setQuickAccount('Ketua Divisi', 'dylan.dwiputra', 'password123')}
+                className={`p-2.5 rounded text-left border transition-all ${
+                  activeRole === 'Ketua Divisi'
+                    ? 'border-[#13315C] bg-[#EEF1F5] ring-2 ring-[#13315C]/20 shadow-sm'
+                    : 'border-[#D9DEE5] hover:bg-[#F1F3F6]'
+                }`}
               >
                 <span className="font-bold text-[#13315C] block">Ketua Divisi</span>
                 <span className="text-xs text-[#4A5565]">dylan.dwiputra</span>
               </button>
               <button
                 type="button"
-                onClick={() => setQuickAccount('puti.amelia', 'password123')}
-                className="p-2.5 rounded text-left border border-[#D9DEE5] hover:bg-[#F1F3F6] transition-colors"
+                onClick={() => setQuickAccount('HRD', 'puti.amelia', 'password123')}
+                className={`p-2.5 rounded text-left border transition-all ${
+                  activeRole === 'HRD'
+                    ? 'border-[#13315C] bg-[#EEF1F5] ring-2 ring-[#13315C]/20 shadow-sm'
+                    : 'border-[#D9DEE5] hover:bg-[#F1F3F6]'
+                }`}
               >
                 <span className="font-bold text-[#13315C] block">HRD</span>
                 <span className="text-xs text-[#4A5565]">puti.amelia</span>
               </button>
               <button
                 type="button"
-                onClick={() => setQuickAccount('admin', 'password123')}
-                className="p-2.5 rounded text-left border border-[#D9DEE5] hover:bg-[#F1F3F6] transition-colors"
+                onClick={() => setQuickAccount('Admin', 'admin', 'password123')}
+                className={`p-2.5 rounded text-left border transition-all ${
+                  activeRole === 'Admin'
+                    ? 'border-[#13315C] bg-[#EEF1F5] ring-2 ring-[#13315C]/20 shadow-sm'
+                    : 'border-[#D9DEE5] hover:bg-[#F1F3F6]'
+                }`}
               >
                 <span className="font-bold text-[#13315C] block">Admin</span>
                 <span className="text-xs text-[#4A5565]">admin</span>
