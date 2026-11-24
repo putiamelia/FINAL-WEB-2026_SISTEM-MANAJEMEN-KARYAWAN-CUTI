@@ -2,6 +2,33 @@ import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { verifyToken, TOKEN_NAME } from '@/lib/auth';
 
+export async function GET(request) {
+  try {
+    const token = request.cookies.get(TOKEN_NAME)?.value;
+    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const { searchParams } = new URL(request.url);
+    const divisi_id = parseInt(searchParams.get('divisi_id'), 10);
+
+    if (!divisi_id) {
+      return NextResponse.json({ error: 'Divisi ID wajib disertakan.' }, { status: 400 });
+    }
+
+    const res = await query(
+      `SELECT u.id, u.username, u.nama_lengkap, u.email, u.role, u.jabatan,
+              u.status_aktif, u.sisa_kuota_tahunan, u.tanggal_bergabung, u.foto_profil
+       FROM users u
+       WHERE u.divisi_id = $1
+       ORDER BY CASE WHEN u.role = 'Ketua Divisi' THEN 1 ELSE 2 END, u.nama_lengkap ASC`,
+      [divisi_id]
+    );
+
+    return NextResponse.json({ members: res.rows });
+  } catch (err) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
+
 export async function POST(request) {
   try {
     const token = request.cookies.get(TOKEN_NAME)?.value;

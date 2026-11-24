@@ -106,6 +106,7 @@ export default function Sidebar({ user }) {
           { href: '/admin/jenis-cuti', label: 'Jenis Cuti', icon: Layers },
           { href: '/admin/hari-libur', label: 'Hari Libur & Cuti', icon: CalendarRange },
           { href: '/admin/blackout', label: 'Blackout Period', icon: FileText },
+          { href: '/hrd/semua-pengajuan', label: 'Monitoring Cuti', icon: History },
         ],
       },
       {

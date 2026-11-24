@@ -23,6 +23,9 @@ export default function AdminPenggunaPage() {
   const [loading, setLoading] = useState(true);
   const [roleFilter, setRoleFilter] = useState('Semua');
   const [divisiFilter, setDivisiFilter] = useState('Semua');
+  const [statusAktifFilter, setStatusAktifFilter] = useState('Semua');
+  const [masaKerjaFilter, setMasaKerjaFilter] = useState('Semua');
+  const [sortBy, setSortBy] = useState('default');
   const [search, setSearch] = useState('');
 
   // Modal State
@@ -52,13 +55,21 @@ export default function AdminPenggunaPage() {
 
   useEffect(() => {
     fetchData();
-  }, [roleFilter, divisiFilter]);
+  }, [roleFilter, divisiFilter, statusAktifFilter, masaKerjaFilter, sortBy]);
 
   async function fetchData() {
     try {
       setLoading(true);
+      const queryParams = new URLSearchParams({
+        role: roleFilter,
+        divisi_id: divisiFilter,
+        status_aktif: statusAktifFilter,
+        masa_kerja: masaKerjaFilter,
+        sort: sortBy,
+      });
+
       const [uRes, dRes] = await Promise.all([
-        fetch(`/api/admin/users?role=${encodeURIComponent(roleFilter)}&divisi_id=${encodeURIComponent(divisiFilter)}`),
+        fetch(`/api/admin/users?${queryParams.toString()}`),
         fetch('/api/admin/divisions'),
       ]);
 
@@ -264,11 +275,11 @@ export default function AdminPenggunaPage() {
         </button>
       </div>
 
-      {/* Filter Bar */}
-      <div className="bg-white p-3.5 sm:p-4 rounded-md border border-[#D9DEE5] mb-6 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 shadow-sm text-xs">
-        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3 flex-1">
+      {/* Filter & Sort Bar */}
+      <div className="bg-white p-3.5 sm:p-4 rounded-md border border-[#D9DEE5] mb-6 flex flex-col gap-3 shadow-sm text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5">
           {/* Search Input with aligned icon */}
-          <div className="relative flex-1 sm:flex-initial sm:w-64 min-w-[220px]">
+          <div className="relative sm:col-span-2">
             <Search className="w-4 h-4 text-[#4A5565] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
@@ -280,7 +291,7 @@ export default function AdminPenggunaPage() {
           </div>
 
           {/* Role Filter Select */}
-          <div className="w-full sm:w-36">
+          <div>
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
@@ -295,7 +306,7 @@ export default function AdminPenggunaPage() {
           </div>
 
           {/* Divisi Filter Select */}
-          <div className="w-full sm:w-48">
+          <div>
             <select
               value={divisiFilter}
               onChange={(e) => setDivisiFilter(e.target.value)}
@@ -309,17 +320,61 @@ export default function AdminPenggunaPage() {
               ))}
             </select>
           </div>
+
+          {/* Status Aktif Filter Select */}
+          <div>
+            <select
+              value={statusAktifFilter}
+              onChange={(e) => setStatusAktifFilter(e.target.value)}
+              className="input-field !h-9 text-xs w-full"
+            >
+              <option value="Semua">Semua Status</option>
+              <option value="true">Aktif</option>
+              <option value="false">Nonaktif</option>
+            </select>
+          </div>
+
+          {/* Masa Kerja Filter Select */}
+          <div>
+            <select
+              value={masaKerjaFilter}
+              onChange={(e) => setMasaKerjaFilter(e.target.value)}
+              className="input-field !h-9 text-xs w-full"
+            >
+              <option value="Semua">Semua Masa Kerja</option>
+              <option value="kurang_1_tahun">&lt; 1 Thn (Probation)</option>
+              <option value="lebih_1_tahun">&ge; 1 Thn (Eligible Cuti)</option>
+            </select>
+          </div>
         </div>
 
-        <div className="text-[#4A5565] font-semibold text-xs shrink-0 self-end sm:self-center">
-          Total {filteredUsers.length} Pengguna
+        {/* Baris Kedua: Sortir & Total Counter */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-[#E6EAF0]">
+          <div className="flex items-center gap-2">
+            <span className="text-[#4A5565] font-semibold">Urutkan:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="input-field !h-8 text-xs !w-auto"
+            >
+              <option value="default">Terbaru Dibuat</option>
+              <option value="name_asc">Nama (A - Z)</option>
+              <option value="name_desc">Nama (Z - A)</option>
+              <option value="join_desc">Tgl Bergabung (Terbaru)</option>
+              <option value="join_asc">Tgl Bergabung (Terlama)</option>
+              <option value="divisi_asc">Divisi (A - Z)</option>
+            </select>
+          </div>
+          <div className="text-[#4A5565] font-semibold text-xs">
+            Menampilkan {filteredUsers.length} Pengguna
+          </div>
         </div>
       </div>
 
       {/* Tabel Pengguna */}
       <div className="bg-white rounded-md border border-[#D9DEE5] overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[700px] text-left border-collapse">
+          <table className="w-full min-w-[780px] text-left border-collapse">
             <thead>
               <tr>
                 <th className="table-header">Pegawai</th>
@@ -328,20 +383,21 @@ export default function AdminPenggunaPage() {
                 <th className="table-header">Jabatan</th>
                 <th className="table-header text-center">Sisa Kuota</th>
                 <th className="table-header text-center">Status</th>
+                <th className="table-header">Tanggal Masuk</th>
                 <th className="table-header text-right">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E6EAF0] text-xs">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-[#4A5565]">
+                  <td colSpan={8} className="p-8 text-center text-[#4A5565]">
                     Memuat data pengguna...
                   </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-[#4A5565]">
-                    Tidak ada data pengguna yang sesuai.
+                  <td colSpan={8} className="p-8 text-center text-[#4A5565]">
+                    Tidak ada data pengguna yang sesuai dengan filter.
                   </td>
                 </tr>
               ) : (
@@ -381,6 +437,9 @@ export default function AdminPenggunaPage() {
                         </span>
                       )}
                     </td>
+                    <td className="table-cell text-[#4A5565]">
+                      {formatDateIndo(u.tanggal_bergabung)}
+                    </td>
                     <td className="table-cell text-right space-x-2">
                       <button
                         type="button"
@@ -390,12 +449,12 @@ export default function AdminPenggunaPage() {
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
-                      {u.role !== 'Admin' && (
+                      {(u.role === 'Karyawan' || u.role === 'Ketua Divisi') && (
                         <button
                           type="button"
                           onClick={() => setDeleteModal({ open: true, user: u })}
                           className="p-1 rounded text-[#991B1B] hover:bg-[#FEE2E2]"
-                          title="Hapus Pengguna"
+                          title="Hapus Pengguna (Karyawan & Ketua Divisi)"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

@@ -18,6 +18,8 @@ export async function GET(request) {
     const divisi_id = searchParams.get('divisi_id');
     const status_aktif = searchParams.get('status_aktif');
     const search = searchParams.get('search');
+    const masa_kerja = searchParams.get('masa_kerja');
+    const sort = searchParams.get('sort');
 
     let sql = `
       SELECT u.id, u.username, u.email, u.nama_lengkap, u.role, u.jabatan,
@@ -50,12 +52,30 @@ export async function GET(request) {
       sql += ` AND u.status_aktif = $${params.length}`;
     }
 
+    if (masa_kerja === 'kurang_1_tahun') {
+      sql += ` AND u.tanggal_bergabung > CURRENT_DATE - INTERVAL '1 year'`;
+    } else if (masa_kerja === 'lebih_1_tahun') {
+      sql += ` AND u.tanggal_bergabung <= CURRENT_DATE - INTERVAL '1 year'`;
+    }
+
     if (search) {
       params.push(`%${search.toLowerCase()}%`);
       sql += ` AND (LOWER(u.nama_lengkap) LIKE $${params.length} OR LOWER(u.username) LIKE $${params.length} OR LOWER(u.email) LIKE $${params.length})`;
     }
 
-    sql += ` ORDER BY u.created_at DESC`;
+    if (sort === 'name_asc') {
+      sql += ` ORDER BY u.nama_lengkap ASC`;
+    } else if (sort === 'name_desc') {
+      sql += ` ORDER BY u.nama_lengkap DESC`;
+    } else if (sort === 'join_desc') {
+      sql += ` ORDER BY u.tanggal_bergabung DESC, u.id DESC`;
+    } else if (sort === 'join_asc') {
+      sql += ` ORDER BY u.tanggal_bergabung ASC, u.id ASC`;
+    } else if (sort === 'divisi_asc') {
+      sql += ` ORDER BY COALESCE(d.nama_divisi, 'ZZZ') ASC, u.nama_lengkap ASC`;
+    } else {
+      sql += ` ORDER BY u.created_at DESC`;
+    }
 
     const res = await query(sql, params);
     return NextResponse.json({ users: res.rows });
@@ -234,15 +254,18 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'Anda tidak dapat menghapus akun Anda sendiri.' }, { status: 400 });
     }
 
-    // Cek role target (hanya boleh hapus Karyawan & Ketua Divisi)
+    // Cek role target (hanya boleh hapus Karyawan & Ketua Divisi sesuai modul)
     const targetRes = await query(`SELECT id, role, nama_lengkap FROM users WHERE id = $1`, [id]);
     if (targetRes.rows.length === 0) {
       return NextResponse.json({ error: 'Pengguna tidak ditemukan' }, { status: 404 });
     }
     const targetUser = targetRes.rows[0];
 
-    if (targetUser.role === 'Admin') {
-      return NextResponse.json({ error: 'Tidak dapat menghapus akun Administrator.' }, { status: 400 });
+    if (targetUser.role !== 'Karyawan' && targetUser.role !== 'Ketua Divisi') {
+      return NextResponse.json(
+        { error: 'Sesuai ketentuan, hanya pengguna dengan peran Karyawan dan Ketua Divisi yang dapat dihapus.' },
+        { status: 400 }
+      );
     }
 
     // Proteksi relasi data: tidak dapat dihapus jika memiliki cuti aktif / pending

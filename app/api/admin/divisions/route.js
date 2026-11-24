@@ -8,17 +8,42 @@ export async function GET(request) {
     const token = request.cookies.get(TOKEN_NAME)?.value;
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const sql = `
+    const { searchParams } = new URL(request.url);
+    const search = searchParams.get('search');
+    const sort = searchParams.get('sort');
+
+    let sql = `
       SELECT d.id, d.nama_divisi, d.deskripsi, d.ketua_id, d.tanggal_dibentuk,
              u.nama_lengkap as nama_ketua, u.email as email_ketua,
              COUNT(m.id) as jumlah_anggota
       FROM divisions d
       LEFT JOIN users u ON d.ketua_id = u.id
       LEFT JOIN users m ON m.divisi_id = d.id AND m.status_aktif = TRUE
-      GROUP BY d.id, u.nama_lengkap, u.email
-      ORDER BY d.nama_divisi ASC
     `;
-    const res = await query(sql);
+
+    const params = [];
+    if (search) {
+      params.push(`%${search.toLowerCase()}%`);
+      sql += ` WHERE (LOWER(d.nama_divisi) LIKE $${params.length} OR LOWER(COALESCE(u.nama_lengkap, '')) LIKE $${params.length})`;
+    }
+
+    sql += ` GROUP BY d.id, u.nama_lengkap, u.email`;
+
+    if (sort === 'name_desc') {
+      sql += ` ORDER BY d.nama_divisi DESC`;
+    } else if (sort === 'members_desc') {
+      sql += ` ORDER BY jumlah_anggota DESC, d.nama_divisi ASC`;
+    } else if (sort === 'members_asc') {
+      sql += ` ORDER BY jumlah_anggota ASC, d.nama_divisi ASC`;
+    } else if (sort === 'date_desc') {
+      sql += ` ORDER BY d.tanggal_dibentuk DESC, d.id DESC`;
+    } else if (sort === 'date_asc') {
+      sql += ` ORDER BY d.tanggal_dibentuk ASC, d.id ASC`;
+    } else {
+      sql += ` ORDER BY d.nama_divisi ASC`;
+    }
+
+    const res = await query(sql, params);
 
     // Ambil jabatan yang ada di users per divisi
     const dbPositionsByDiv = {};

@@ -14,6 +14,8 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
     const limit = parseInt(searchParams.get('limit') || '50', 10);
+    const isAll = searchParams.get('all') === 'true' && (decoded.role === 'HRD' || decoded.role === 'Admin');
+    const divisi_id = searchParams.get('divisi_id');
 
     let sql = `
       SELECT r.id, r.nomor_pengajuan, r.user_id, u.nama_lengkap, u.jabatan, d.nama_divisi,
@@ -32,10 +34,20 @@ export async function GET(request) {
       LEFT JOIN users hu ON r.handover_user_id = hu.id
       LEFT JOIN users lu ON r.leader_approver_id = lu.id
       LEFT JOIN users hrd ON r.hrd_approver_id = hrd.id
-      WHERE r.user_id = $1
+      WHERE 1=1
     `;
 
-    const params = [decoded.id];
+    const params = [];
+
+    if (!isAll) {
+      params.push(decoded.id);
+      sql += ` AND r.user_id = $${params.length}`;
+    }
+
+    if (divisi_id && divisi_id !== 'Semua') {
+      params.push(parseInt(divisi_id, 10));
+      sql += ` AND u.divisi_id = $${params.length}`;
+    }
 
     if (status && status !== 'Semua') {
       params.push(status);

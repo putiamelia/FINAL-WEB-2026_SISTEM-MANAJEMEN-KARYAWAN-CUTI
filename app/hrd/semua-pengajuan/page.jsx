@@ -38,7 +38,7 @@ export default function SemuaPengajuanHrdPage() {
       // Fetch all requests
       const res = await fetch('/api/admin/users'); // we can also fetch from a general route
       // Let's call the leave request route with hrd/admin context
-      const reqRes = await fetch(`/api/leave/request?status=${encodeURIComponent(selectedStatus)}&limit=200`);
+      const reqRes = await fetch(`/api/leave/request?all=true&status=${encodeURIComponent(selectedStatus)}&limit=200`);
       if (reqRes.ok) {
         const d = await reqRes.json();
         setRequests(d.requests || []);
