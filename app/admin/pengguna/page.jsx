@@ -440,24 +440,34 @@ export default function AdminPenggunaPage() {
                     <td className="table-cell text-[#4A5565]">
                       {formatDateIndo(u.tanggal_bergabung)}
                     </td>
-                    <td className="table-cell text-right space-x-2">
+                    <td className="table-cell text-right whitespace-nowrap space-x-1.5">
                       <button
                         type="button"
                         onClick={() => handleOpenEdit(u)}
-                        className="p-1 rounded text-[#13315C] hover:bg-[#F1F3F6]"
-                        title="Ubah Pengguna"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-semibold text-[#13315C] bg-[#EEF1F5] hover:bg-[#D9DEE5] transition-colors"
+                        title="Ubah data pengguna & ganti role pegawai"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Edit2 className="w-3.5 h-3.5" />
+                        <span>Edit / Ganti Role</span>
                       </button>
-                      {(u.role === 'Karyawan' || u.role === 'Ketua Divisi') && (
+                      {u.role === 'Karyawan' || u.role === 'Ketua Divisi' ? (
                         <button
                           type="button"
                           onClick={() => setDeleteModal({ open: true, user: u })}
-                          className="p-1 rounded text-[#991B1B] hover:bg-[#FEE2E2]"
-                          title="Hapus Pengguna (Karyawan & Ketua Divisi)"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-semibold text-[#991B1B] bg-[#FEE2E2] hover:bg-[#FECACA] transition-colors"
+                          title="Hapus akun pegawai ini"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Hapus</span>
                         </button>
+                      ) : (
+                        <span
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] font-medium text-gray-400 bg-gray-100 cursor-not-allowed"
+                          title="Akun Admin & HRD dilindungi dari penghapusan sesuai ketentuan modul"
+                        >
+                          <Trash2 className="w-3.5 h-3.5 opacity-40" />
+                          <span>Terlindungi</span>
+                        </span>
                       )}
                     </td>
                   </tr>
@@ -606,12 +616,12 @@ export default function AdminPenggunaPage() {
                 </div>
                 <div>
                   <label className="block font-semibold text-[#1B2430] uppercase mb-1">
-                    Role Pengguna *
+                    Role Pengguna (Ganti Peran) *
                   </label>
                   <select
                     value={formData.role}
                     onChange={(e) => handleModalRoleChange(e.target.value)}
-                    className="input-field"
+                    className="input-field font-semibold text-[#13315C]"
                   >
                     <option value="Karyawan">Karyawan</option>
                     <option value="Ketua Divisi">Ketua Divisi</option>
