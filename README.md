@@ -39,24 +39,41 @@ Struktur Direktori
 
 ```text
 ├── app/
-│   ├── admin/                # Halaman dashboard & konfigurasi Admin
-│   ├── hrd/                  # Halaman dashboard & persetujuan final HRD
-│   ├── ketua/                # Halaman verifikasi Ketua Divisi
-│   ├── karyawan/             # Halaman pengajuan & riwayat Karyawan
-│   ├── api/                  # API endpoints backend (REST Raw SQL)
-│   ├── globals.css           # Styling global & tema perbankan
+│   ├── admin/                # Halaman dashboard, master pengguna, divisi, cuti & kalender
+│   ├── api/                  # REST API Route Handlers (Raw SQL & transaksi PostgreSQL)
+│   ├── hrd/                  # Halaman dashboard, persetujuan final & monitoring cuti
+│   ├── karyawan/             # Halaman pengajuan, simulasi kuota & riwayat cuti Karyawan
+│   ├── ketua/                # Halaman dashboard verifikasi & pengajuan cuti Ketua Divisi
+│   ├── register/             # Halaman registrasi akun pegawai baru
+│   ├── globals.css           # Styling global & desain token perbankan (Tailwind CSS)
 │   ├── layout.jsx            # Layout utama aplikasi
-│   └── page.jsx              # Halaman login modern BNS
-├── components/               # Komponen UI (Sidebar, Topbar, Badges, Modals)
-├── lib/
-│   ├── db.js                 # PostgreSQL Pool & Transaction Runner
-│   ├── auth.js               # JWT signing, verification, and bcrypt hashing
-│   └── utils.js              # Format tanggal Indonesia, hitung hari kerja, badges
-├── public/assets/            # Aset grafis (Logo BNS, foto karyawan)
-├── database.sql              # Skrip DDL & DML skema database PostgreSQL
-├── schema.sql                # Salinan skrip DDL/DML untuk evaluasi praktikum
-├── scripts/init-db.js        # Skrip otomatisasi inisialisasi basis data
-└── package.json
+│   └── page.jsx              # Halaman login modern BNS & tombol akses cepat
+├── components/               # Komponen UI modular
+│   ├── ApprovalModal.jsx     # Modal konfirmasi persetujuan & penolakan dengan catatan wajib
+│   ├── DashboardLayout.jsx   # Layout dashboard responsif (Topbar, Sidebar, Breadcrumb)
+│   ├── Sidebar.jsx           # Navigasi sidebar dinamis berdasarkan 4 role pengguna
+│   ├── StatCard.jsx          # Kartu metrik analitik dashboard dengan progress bar
+│   ├── StatusBadge.jsx       # Badge indikator visual status pengajuan cuti
+│   └── Topbar.jsx            # Header navigasi atas, profil & notifikasi in-app
+├── lib/                      # Utilitas & pustaka backend
+│   ├── auth.js               # Enkripsi bcrypt, penerbitan & verifikasi JWT (HttpOnly)
+│   ├── db.js                 # PostgreSQL Pool Connection & SQL Transaction Runner
+│   ├── positions.js          # Master struktur jabatan & pemetaan posisi divisi perbankan
+│   └── utils.js              # Perhitungan hari kerja, filter libur, format mata uang & tanggal
+├── public/                   # Aset publik statis
+│   ├── assets/               # Logo resmi Bank Nusantara & foto profil default
+│   └── uploads/              # Direktori penyimpanan unggahan dokumen surat dokter & foto pegawai
+├── scripts/                  # Skrip otomatisasi & pemeliharaan database
+│   ├── fix-passwords.js      # Utility sinkronisasi hash password pengguna
+│   ├── init-db.js            # Inisialisasi otomatis skema tabel & data awal
+│   └── test-db.js            # Uji coba koneksi PostgreSQL client/pool
+├── middleware.js             # Edge Middleware autentikasi JWT & proteksi rute RBAC
+├── database.sql              # Skrip DDL & DML skema database PostgreSQL (di luar /app)
+├── schema.sql                # Salinan DDL/DML lengkap untuk evaluasi praktikum
+├── jsconfig.json             # Konfigurasi path alias Next.js (@/*)
+├── next.config.js            # Konfigurasi Next.js
+├── tailwind.config.js        # Konfigurasi palette warna & tema Tailwind CSS
+└── package.json              # Dependensi proyek & skrip npm
 ```
 
 ---
@@ -109,7 +126,7 @@ Halaman login telah dilengkapi tombol **Akses Cepat Pengujian** untuk memudahkan
 
 | Peran | Username / Email | Kata Sandi | Nama Pegawai | Divisi |
 |---|---|---|---|---|
-| **Karyawan** | `karis.kabanga` | `password123` | Karis Katanga | Operasional & Layanan Nasabah |
+| **Karyawan** | `karis.kabanga` | `password123` | Karis Kabanga | Operasional & Layanan Nasabah |
 | **Ketua Divisi** | `dylan.dwiputra` | `password123` | Dylan Dwiputra | Operasional & Layanan Nasabah |
 | **HRD** | `puti.amelia` | `password123` | Puti Amelia | Human Resources |
 | **Admin** | `admin` | `password123` | Administrator Sistem | Divisi Teknologi Informasi |
