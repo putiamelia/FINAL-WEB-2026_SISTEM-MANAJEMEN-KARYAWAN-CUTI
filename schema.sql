@@ -197,14 +197,15 @@ INSERT INTO divisions (id, nama_divisi, deskripsi, tanggal_dibentuk) VALUES
 (4, 'Teknologi Informasi', 'Pengembangan perangkat lunak, infrastruktur server, dan keamanan data', '2020-01-15'),
 (5, 'Kepatuhan dan Risiko', 'Manajemen risiko kepatuhan perbankan dan audit regulasi OJK', '2020-01-15'),
 (6, 'Keuangan', 'Pencatatan akuntansi, manajemen kas, dan pelaporan keuangan berkala', '2020-01-15'),
-(7, 'Pemasaran', 'Branding, akuisisi nasabah prioritas, dan kampanye produk perbankan', '2020-01-15');
-ALTER SEQUENCE divisions_id_seq RESTART WITH 8;
+(7, 'Pemasaran', 'Branding, akuisisi nasabah prioritas, dan kampanye produk perbankan', '2020-01-15'),
+(8, 'Human Resources', 'Pengelolaan kepegawaian, pengembangan talenta, dan kesejahteraan karyawan', '2020-01-15');
+ALTER SEQUENCE divisions_id_seq RESTART WITH 9;
 
 -- Data Pengguna Utama (Admin, HRD, Ketua Divisi, Karyawan)
 -- Hash: $2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe (password123)
 INSERT INTO users (id, username, email, password_hash, nama_lengkap, role, jabatan, divisi_id, kuota_tahunan_awal, sisa_kuota_tahunan, kuota_terpakai, nomor_telepon, alamat, status_aktif, tanggal_bergabung, foto_profil) VALUES
 (1, 'admin', 'admin@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Hendri Wijaya', 'Admin', 'Sistem Administrator', 4, 12.0, 12.0, 0.0, '08123456001', 'Jl. Sudirman Kav. 21, Jakarta Pusat', TRUE, '2022-01-10', '/assets/foto-karyawan.png'),
-(2, 'maya.kusuma', 'hrd@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Maya Kusuma', 'HRD', 'Human Resource Manager', 5, 12.0, 9.0, 3.0, '08123456002', 'Jl. Rasuna Said Blok B4, Jakarta Selatan', TRUE, '2021-03-01', '/assets/foto-karyawati.png'),
+(2, 'maya.kusuma', 'hrd@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Maya Kusuma', 'HRD', 'Human Resource Manager', 8, 12.0, 9.0, 3.0, '08123456002', 'Jl. Rasuna Said Blok B4, Jakarta Selatan', TRUE, '2021-03-01', '/assets/foto-karyawati.png'),
 (3, 'bagus.santoso', 'bagus.santoso@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Bagus Santoso', 'Ketua Divisi', 'Head of Customer Service', 1, 12.0, 10.0, 2.0, '08123456003', 'Jl. Gatot Subroto No. 45, Jakarta Selatan', TRUE, '2020-05-15', '/assets/foto-karyawan.png'),
 (4, 'rina.maharani', 'rina.maharani@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Rina Maharani', 'Karyawan', 'Customer Service Officer', 1, 12.0, 7.5, 4.5, '08123456004', 'Jl. Tebet Timur Dalam No. 12, Jakarta Selatan', TRUE, '2023-02-15', '/assets/foto-karyawati.png'),
 (5, 'yusuf.kurniawan', 'yusuf.kurniawan@banknusantara.co.id', '$2b$10$yiOC0WdcU/fi8s5U8tqJ7uaV57bTdaJtZt8LNZfo/xAm2f8i4QXfe', 'Yusuf Kurniawan', 'Karyawan', 'Senior Customer Service', 1, 12.0, 8.0, 4.0, '08123456005', 'Jl. Duren Tiga No. 8, Jakarta Selatan', TRUE, '2022-08-01', '/assets/foto-karyawan.png'),
