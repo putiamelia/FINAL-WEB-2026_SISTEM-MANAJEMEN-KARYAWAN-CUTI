@@ -476,8 +476,9 @@ export default function PengajuanCutiPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="handoverUser" className="block text-xs font-semibold text-[#1B2430] uppercase mb-1.5">
-                    Rekan Pengganti (Handover)
+                  <label htmlFor="handoverUser" className="block text-xs font-semibold text-[#1B2430] uppercase mb-1.5 flex items-center justify-between">
+                    <span>Rekan Pengganti (Handover)</span>
+                    <span className="text-[11px] font-normal text-[#4A5565] lowercase">(opsional)</span>
                   </label>
                   <select
                     id="handoverUser"
@@ -485,7 +486,7 @@ export default function PengajuanCutiPage() {
                     onChange={(e) => setHandoverUserId(e.target.value)}
                     className="input-field"
                   >
-                    <option value="">-- Pilih Rekan Pengganti --</option>
+                    <option value="">-- Tidak Ada / Pilih Rekan Pengganti (Opsional) --</option>
                     {colleagues.length === 0 ? (
                       <option value="" disabled>Tidak ada rekan lain di divisi ini</option>
                     ) : (
@@ -499,20 +500,21 @@ export default function PengajuanCutiPage() {
                     )}
                   </select>
                   <p className="text-[11px] text-[#4A5565] mt-1">
-                    * Menampilkan rekan kerja satu divisi {profile?.nama_divisi ? `(${profile.nama_divisi})` : ''} untuk serah terima tugas.
+                    * Opsional. Pilih rekan satu divisi {profile?.nama_divisi ? `(${profile.nama_divisi})` : ''} jika ada serah terima delegasi tugas pekerjaan selama cuti.
                   </p>
                 </div>
 
                 <div>
-                  <label htmlFor="handoverNotes" className="block text-xs font-semibold text-[#1B2430] uppercase mb-1.5">
-                    Catatan Serah Terima Tugas
+                  <label htmlFor="handoverNotes" className="block text-xs font-semibold text-[#1B2430] uppercase mb-1.5 flex items-center justify-between">
+                    <span>Catatan Serah Terima Tugas</span>
+                    <span className="text-[11px] font-normal text-[#4A5565] lowercase">(opsional)</span>
                   </label>
                   <input
                     id="handoverNotes"
                     type="text"
                     value={catatanHandover}
                     onChange={(e) => setCatatanHandover(e.target.value)}
-                    placeholder="Contoh: Tiket komplain nasabah dialihkan..."
+                    placeholder="Opsional. Contoh: Tiket komplain nasabah dialihkan..."
                     className="input-field"
                   />
                 </div>
