@@ -215,7 +215,7 @@ export default function LoginPage() {
               </label>
               <button
                 type="button"
-                onClick={() => alert('Silakan hubungi Admin sistem atau HRD untuk reset kata sandi Anda.')}
+                onClick={() => alert('Silakan hubungi Admin sistem untuk reset kata sandi Anda.')}
                 className="text-[#13315C] font-semibold hover:underline"
               >
                 Lupa kata sandi?
@@ -255,11 +255,10 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setQuickAccount('Karyawan', 'karis.kabanga', 'password123')}
-                className={`p-2.5 rounded text-left border transition-all ${
-                  activeRole === 'Karyawan'
+                className={`p-2.5 rounded text-left border transition-all ${activeRole === 'Karyawan'
                     ? 'border-[#13315C] bg-[#EEF1F5] ring-2 ring-[#13315C]/20 shadow-sm'
                     : 'border-[#D9DEE5] hover:bg-[#F1F3F6]'
-                }`}
+                  }`}
               >
                 <span className="font-bold text-[#13315C] block">Karyawan</span>
                 <span className="text-xs text-[#4A5565]">karis.kabanga</span>
@@ -267,11 +266,10 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setQuickAccount('Ketua Divisi', 'dylan.dwiputra', 'password123')}
-                className={`p-2.5 rounded text-left border transition-all ${
-                  activeRole === 'Ketua Divisi'
+                className={`p-2.5 rounded text-left border transition-all ${activeRole === 'Ketua Divisi'
                     ? 'border-[#13315C] bg-[#EEF1F5] ring-2 ring-[#13315C]/20 shadow-sm'
                     : 'border-[#D9DEE5] hover:bg-[#F1F3F6]'
-                }`}
+                  }`}
               >
                 <span className="font-bold text-[#13315C] block">Ketua Divisi</span>
                 <span className="text-xs text-[#4A5565]">dylan.dwiputra</span>
@@ -279,11 +277,10 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setQuickAccount('HRD', 'puti.amelia', 'password123')}
-                className={`p-2.5 rounded text-left border transition-all ${
-                  activeRole === 'HRD'
+                className={`p-2.5 rounded text-left border transition-all ${activeRole === 'HRD'
                     ? 'border-[#13315C] bg-[#EEF1F5] ring-2 ring-[#13315C]/20 shadow-sm'
                     : 'border-[#D9DEE5] hover:bg-[#F1F3F6]'
-                }`}
+                  }`}
               >
                 <span className="font-bold text-[#13315C] block">HRD</span>
                 <span className="text-xs text-[#4A5565]">puti.amelia</span>
@@ -291,11 +288,10 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setQuickAccount('Admin', 'admin', 'password123')}
-                className={`p-2.5 rounded text-left border transition-all ${
-                  activeRole === 'Admin'
+                className={`p-2.5 rounded text-left border transition-all ${activeRole === 'Admin'
                     ? 'border-[#13315C] bg-[#EEF1F5] ring-2 ring-[#13315C]/20 shadow-sm'
                     : 'border-[#D9DEE5] hover:bg-[#F1F3F6]'
-                }`}
+                  }`}
               >
                 <span className="font-bold text-[#13315C] block">Admin</span>
                 <span className="text-xs text-[#4A5565]">admin</span>

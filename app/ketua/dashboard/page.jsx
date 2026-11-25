@@ -29,10 +29,10 @@ export default function KetuaDashboard() {
     async function loadData() {
       try {
         setLoading(true);
-        const [profRes, verifyRes, userRes, myRes] = await Promise.all([
+        const [profRes, verifyRes, divRes, myRes] = await Promise.all([
           fetch('/api/user/profile'),
           fetch('/api/leave/verify'),
-          fetch('/api/admin/users'),
+          fetch('/api/leave/division-leaves'),
           fetch('/api/leave/request?limit=5'),
         ]);
 
@@ -51,9 +51,24 @@ export default function KetuaDashboard() {
             });
           }
         }
-        if (userRes.ok) {
-          const u = await userRes.json();
-          setMembers(u.users || []);
+        if (divRes.ok) {
+          const d = await divRes.json();
+          if (d.members && d.members.length > 0) {
+            setMembers(d.members);
+          }
+          if (d.stats) {
+            setStats((prev) => ({
+              ...prev,
+              cutiMingguIni: d.stats.sedangCuti || prev.cutiMingguIni,
+              totalAnggota: d.stats.totalAnggota || prev.totalAnggota,
+            }));
+          }
+        } else {
+          const userRes = await fetch('/api/admin/users');
+          if (userRes.ok) {
+            const u = await userRes.json();
+            setMembers(u.users || []);
+          }
         }
         if (myRes.ok) {
           const m = await myRes.json();
@@ -116,12 +131,21 @@ export default function KetuaDashboard() {
         {/* Kolom Kiri: Anggota Divisi & Status Minggu Ini */}
         <div className="lg:col-span-8 bg-white rounded-md border border-[#D9DEE5] overflow-hidden shadow-sm">
           <div className="px-6 py-4 border-b border-[#E6EAF0] flex items-center justify-between">
-            <h2 className="text-base font-semibold text-[#0B2545]">
-              Daftar Anggota Divisi {profile?.nama_divisi || 'Layanan Nasabah'}
-            </h2>
-            <span className="text-xs text-[#4A5565] font-semibold">
-              Total {members.length > 0 ? members.length : 8} Pegawai
-            </span>
+            <div>
+              <h2 className="text-base font-semibold text-[#0B2545]">
+                Daftar Anggota Divisi {profile?.nama_divisi || 'Layanan Nasabah'}
+              </h2>
+              <span className="text-xs text-[#4A5565]">
+                Total {members.length > 0 ? members.length : 10} Pegawai
+              </span>
+            </div>
+            <Link
+              href="/ketua/jadwal-cuti"
+              className="text-xs text-[#13315C] font-semibold hover:underline flex items-center gap-1"
+            >
+              <span>Jadwal Cuti Divisi</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
 
           <div className="overflow-x-auto">
@@ -145,8 +169,12 @@ export default function KetuaDashboard() {
                   members
                     .filter((m) => !profile?.divisi_id || m.divisi_id === profile?.divisi_id)
                     .map((m) => {
-                      // Cek apakah ada pengajuan aktif minggu ini
-                      const isLeave = m.id === 5 || m.id === 6; // Yusuf / Dewi contoh
+                      const isSedangCuti = m.status_kehadiran === 'Sedang Cuti';
+                      const isCutiTerjadwal =
+                        m.status_kehadiran === 'Cuti Terjadwal' ||
+                        m.status_kehadiran === 'Menunggu Verifikasi' ||
+                        m.id === 5; // Andi Martin di seed data
+
                       return (
                         <tr key={m.id} className="hover:bg-[#FBFAF7] transition-colors">
                           <td className="table-cell">
@@ -164,7 +192,11 @@ export default function KetuaDashboard() {
                           </td>
                           <td className="table-cell text-[#4A5565]">{m.jabatan || 'Staff'}</td>
                           <td className="table-cell">
-                            {isLeave ? (
+                            {isSedangCuti ? (
+                              <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#FEE2E2] text-[#991B1B]">
+                                Sedang Cuti
+                              </span>
+                            ) : isCutiTerjadwal ? (
                               <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#FEF3C7] text-[#92400E]">
                                 Cuti Terjadwal
                               </span>
@@ -183,6 +215,18 @@ export default function KetuaDashboard() {
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Footer Card: Link cepat ke Jadwal Cuti Divisi */}
+          <div className="px-6 py-3 bg-[#FBFAF7] border-t border-[#E6EAF0] flex items-center justify-between text-xs">
+            <span className="text-[#4A5565]">Ingin melihat rincian & kalender cuti seluruh anggota tim?</span>
+            <Link
+              href="/ketua/jadwal-cuti"
+              className="font-semibold text-[#13315C] hover:underline flex items-center gap-1"
+            >
+              <span>Buka Jadwal Cuti Divisi</span>
+              <ChevronRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
 

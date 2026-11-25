@@ -65,6 +65,7 @@ export default function Sidebar({ user }) {
         items: [
           { href: '/ketua/dashboard', label: 'Dashboard', icon: LayoutDashboard },
           { href: '/ketua/verifikasi', label: 'Verifikasi Pengajuan', icon: CheckSquare },
+          { href: '/ketua/jadwal-cuti', label: 'Jadwal Cuti Divisi', icon: CalendarRange },
           { href: '/ketua/pengajuan', label: 'Ajukan Cuti ke HRD', icon: CalendarPlus },
           { href: '/ketua/riwayat', label: 'Riwayat Pengajuan', icon: History },
         ],
