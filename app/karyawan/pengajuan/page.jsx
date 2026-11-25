@@ -416,14 +416,21 @@ export default function PengajuanCutiPage() {
                     className="input-field"
                   >
                     <option value="">-- Pilih Rekan Pengganti --</option>
-                    {colleagues
-                      .filter((c) => !profile?.id || String(c.id) !== String(profile.id))
-                      .map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.nama_lengkap} ({c.jabatan || c.role}{c.nama_divisi ? `, Divisi ${c.nama_divisi}` : ''})
-                        </option>
-                      ))}
+                    {colleagues.length === 0 ? (
+                      <option value="" disabled>Tidak ada rekan lain di divisi ini</option>
+                    ) : (
+                      colleagues
+                        .filter((c) => !profile?.id || String(c.id) !== String(profile.id))
+                        .map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.nama_lengkap} ({c.jabatan || c.role})
+                          </option>
+                        ))
+                    )}
                   </select>
+                  <p className="text-[11px] text-[#4A5565] mt-1">
+                    * Menampilkan rekan kerja satu divisi {profile?.nama_divisi ? `(${profile.nama_divisi})` : ''} untuk serah terima tugas.
+                  </p>
                 </div>
 
                 <div>
