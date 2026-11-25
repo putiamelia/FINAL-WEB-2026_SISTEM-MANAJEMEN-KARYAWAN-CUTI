@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';
 import {
   Calendar,
+  Clock,
   AlertCircle,
   CheckCircle,
   HelpCircle,
@@ -115,23 +116,92 @@ export default function PengajuanCutiPage() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  let hMinValid = true;
-  if (tanggalMulai && selectedType && selectedType.nama_cuti === 'Cuti Tahunan') {
+  const hasDateInput = isHalfDay ? Boolean(tanggalMulai) : Boolean(tanggalMulai && tanggalSelesai);
+
+  // 1. Validasi Hari Kerja Efektif
+  let workingDaysStatus = 'WAITING';
+  let workingDaysMessage = 'Pilih tanggal mulai & selesai untuk cek hari kerja';
+
+  if (hasDateInput) {
+    if (calculatedDays > 0) {
+      workingDaysStatus = 'VALID';
+      workingDaysMessage = `${formatDecimal(calculatedDays)} hari kerja efektif (Sabtu, Minggu & libur dikecualikan)`;
+    } else {
+      workingDaysStatus = 'INVALID';
+      workingDaysMessage = 'Periode tanggal tidak memiliki hari kerja efektif';
+    }
+  }
+
+  // 2. Validasi Kuota
+  let quotaStatus = 'WAITING';
+  let quotaMessage = `Saldo kuota tahunan: ${formatDecimal(currentQuota)} hari`;
+
+  if (!isPotongKuota) {
+    quotaStatus = 'VALID';
+    quotaMessage = `Tidak memotong kuota tahunan (saldo tetap ${formatDecimal(currentQuota)} hari)`;
+  } else if (!hasDateInput) {
+    quotaStatus = 'WAITING';
+    quotaMessage = `Saldo kuota tersedia: ${formatDecimal(currentQuota)} hari`;
+  } else {
+    if (currentQuota >= calculatedDays) {
+      quotaStatus = 'VALID';
+      quotaMessage = `Saldo mencukupi (sisa ${formatDecimal(simulatedQuota)} hari setelah cuti)`;
+    } else {
+      quotaStatus = 'INVALID';
+      quotaMessage = `Saldo tidak mencukupi (kurang ${formatDecimal(calculatedDays - currentQuota)} hari)`;
+    }
+  }
+
+  // 3. Validasi Aturan H-Pengajuan
+  const minH = selectedType?.minimal_h_pengajuan || 0;
+  let hMinStatus = 'WAITING';
+  let hMinMessage = minH > 0 ? `Aturan minimal pengajuan (H-${minH})` : 'Dapat diajukan langsung hari H';
+
+  if (minH === 0) {
+    hMinStatus = 'VALID';
+    hMinMessage = 'Bisa diajukan langsung (tanpa batas H-min)';
+  } else if (!tanggalMulai) {
+    hMinStatus = 'WAITING';
+    hMinMessage = `Minimal diajukan H-${minH} hari sebelum tanggal mulai`;
+  } else {
     const sDate = new Date(tanggalMulai);
     sDate.setHours(0, 0, 0, 0);
     const diff = Math.ceil((sDate - today) / (1000 * 60 * 60 * 24));
-    hMinValid = diff >= (selectedType.minimal_h_pengajuan || 3);
+    if (diff >= minH) {
+      hMinStatus = 'VALID';
+      hMinMessage = `Memenuhi aturan (diajukan H-${diff}, syarat min. H-${minH})`;
+    } else {
+      hMinStatus = 'INVALID';
+      hMinMessage = `Terlambat (diajukan H-${diff}, minimal H-${minH} hari sebelumnya)`;
+    }
   }
 
-  const quotaValid = !isPotongKuota || currentQuota >= calculatedDays;
-  const doctorNoteValid = selectedType?.nama_cuti !== 'Cuti Sakit' || (lampiranUrl && lampiranUrl.trim() !== '');
+  // 4. Validasi Dokumen / Surat Lampiran
+  const isDocRequired = Boolean(selectedType?.wajib_lampiran || selectedType?.nama_cuti === 'Cuti Sakit');
+  let docStatus = 'VALID';
+  let docMessage = 'Kelengkapan surat dokter/lampiran (opsional)';
+
+  if (isDocRequired) {
+    if (lampiranUrl && lampiranUrl.trim() !== '') {
+      docStatus = 'VALID';
+      docMessage = 'Dokumen lampiran telah berhasil diunggah';
+    } else {
+      docStatus = 'REQUIRED_WAITING';
+      docMessage = `Wajib melampirkan dokumen (${selectedType?.nama_cuti === 'Cuti Sakit' ? 'Surat Dokter' : 'Dokumen Pendukung'})`;
+    }
+  }
+
+  // Booleans untuk validasi sebelum submit
+  const quotaValid = !isPotongKuota || (hasDateInput && currentQuota >= calculatedDays);
+  const hMinValid = minH === 0 || (Boolean(tanggalMulai) && hMinStatus === 'VALID');
+  const doctorNoteValid = !isDocRequired || Boolean(lampiranUrl && lampiranUrl.trim() !== '');
 
   async function handleSubmit(e) {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
 
-    if (!selectedTypeId || !tanggalMulai || !tanggalSelesai || !alasan.trim()) {
+    if (!selectedTypeId || !tanggalMulai || (!isHalfDay && !tanggalSelesai) || !alasan.trim()) {
       setErrorMsg('Mohon lengkapi semua field yang berbintang merah.');
       return;
     }
@@ -142,7 +212,7 @@ export default function PengajuanCutiPage() {
     }
 
     if (!hMinValid) {
-      setErrorMsg(`Cuti Tahunan harus diajukan minimal H-${selectedType?.minimal_h_pengajuan || 3} hari kerja.`);
+      setErrorMsg(`Cuti ${selectedType?.nama_cuti || ''} harus diajukan minimal H-${minH} hari sebelum tanggal mulai.`);
       return;
     }
 
@@ -152,7 +222,7 @@ export default function PengajuanCutiPage() {
     }
 
     if (!doctorNoteValid) {
-      setErrorMsg('Cuti Sakit wajib menyertakan bukti lampiran surat dokter.');
+      setErrorMsg(`${selectedType?.nama_cuti || 'Pengajuan ini'} wajib menyertakan bukti dokumen lampiran.`);
       return;
     }
 
@@ -640,48 +710,109 @@ export default function PengajuanCutiPage() {
 
           {/* Card 2: Status Validasi Otomatis */}
           <div className="bg-white rounded-md border border-[#D9DEE5] p-5 shadow-sm">
-            <h2 className="text-sm font-bold text-[#0B2545] border-b-2 border-[#C8A24A] pb-2 mb-3">
-              Pemeriksaan Kelayakan Otomatis
-            </h2>
-            <ul className="text-xs space-y-2.5">
-              <li className="flex items-center gap-2">
-                {quotaValid ? (
-                  <CheckCircle className="w-4 h-4 text-[#14532D] shrink-0" />
+            <div className="flex items-center justify-between border-b-2 border-[#C8A24A] pb-2 mb-3">
+              <h2 className="text-sm font-bold text-[#0B2545]">
+                Pemeriksaan Kelayakan Otomatis
+              </h2>
+              <span className="text-[10px] text-[#4A5565] font-medium">Real-time</span>
+            </div>
+            <ul className="text-xs space-y-3">
+              {/* Item 1: Saldo Kuota */}
+              <li className="flex items-start gap-2.5">
+                {quotaStatus === 'VALID' ? (
+                  <CheckCircle className="w-4 h-4 text-[#14532D] shrink-0 mt-0.5" />
+                ) : quotaStatus === 'INVALID' ? (
+                  <XCircle className="w-4 h-4 text-[#991B1B] shrink-0 mt-0.5" />
                 ) : (
-                  <XCircle className="w-4 h-4 text-[#991B1B] shrink-0" />
+                  <Clock className="w-4 h-4 text-[#4A5565] shrink-0 mt-0.5" />
                 )}
-                <span className={quotaValid ? 'text-[#14532D]' : 'text-[#991B1B] font-semibold'}>
-                  Saldo kuota mencukupi ({formatDecimal(currentQuota)} hari)
-                </span>
+                <div className="leading-tight">
+                  <span className="font-semibold text-[#1B2430] block">Saldo Kuota</span>
+                  <span
+                    className={
+                      quotaStatus === 'VALID'
+                        ? 'text-[#14532D] font-medium'
+                        : quotaStatus === 'INVALID'
+                        ? 'text-[#991B1B] font-semibold'
+                        : 'text-[#4A5565]'
+                    }
+                  >
+                    {quotaMessage}
+                  </span>
+                </div>
               </li>
 
-              <li className="flex items-center gap-2">
-                {hMinValid ? (
-                  <CheckCircle className="w-4 h-4 text-[#14532D] shrink-0" />
+              {/* Item 2: Aturan Minimal Pengajuan */}
+              <li className="flex items-start gap-2.5">
+                {hMinStatus === 'VALID' ? (
+                  <CheckCircle className="w-4 h-4 text-[#14532D] shrink-0 mt-0.5" />
+                ) : hMinStatus === 'INVALID' ? (
+                  <XCircle className="w-4 h-4 text-[#991B1B] shrink-0 mt-0.5" />
                 ) : (
-                  <XCircle className="w-4 h-4 text-[#991B1B] shrink-0" />
+                  <Clock className="w-4 h-4 text-[#4A5565] shrink-0 mt-0.5" />
                 )}
-                <span className={hMinValid ? 'text-[#14532D]' : 'text-[#991B1B] font-semibold'}>
-                  Aturan minimal pengajuan (H-{selectedType?.minimal_h_pengajuan || 0})
-                </span>
+                <div className="leading-tight">
+                  <span className="font-semibold text-[#1B2430] block">
+                    Batas Waktu Pengajuan {minH > 0 ? `(H-${minH})` : ''}
+                  </span>
+                  <span
+                    className={
+                      hMinStatus === 'VALID'
+                        ? 'text-[#14532D] font-medium'
+                        : hMinStatus === 'INVALID'
+                        ? 'text-[#991B1B] font-semibold'
+                        : 'text-[#4A5565]'
+                    }
+                  >
+                    {hMinMessage}
+                  </span>
+                </div>
               </li>
 
-              <li className="flex items-center gap-2">
-                {doctorNoteValid ? (
-                  <CheckCircle className="w-4 h-4 text-[#14532D] shrink-0" />
+              {/* Item 3: Kelengkapan Lampiran */}
+              <li className="flex items-start gap-2.5">
+                {docStatus === 'VALID' ? (
+                  <CheckCircle className="w-4 h-4 text-[#14532D] shrink-0 mt-0.5" />
                 ) : (
-                  <XCircle className="w-4 h-4 text-[#991B1B] shrink-0" />
+                  <AlertCircle className="w-4 h-4 text-[#D97706] shrink-0 mt-0.5" />
                 )}
-                <span className={doctorNoteValid ? 'text-[#14532D]' : 'text-[#991B1B] font-semibold'}>
-                  Kelengkapan surat dokter/lampiran
-                </span>
+                <div className="leading-tight">
+                  <span className="font-semibold text-[#1B2430] block">Kelengkapan Dokumen</span>
+                  <span
+                    className={
+                      docStatus === 'VALID'
+                        ? 'text-[#14532D] font-medium'
+                        : 'text-[#B45309] font-semibold'
+                    }
+                  >
+                    {docMessage}
+                  </span>
+                </div>
               </li>
 
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-[#14532D] shrink-0" />
-                <span className="text-[#14532D]">
-                  Pemeriksaan hari kerja (Sabtu & Minggu dikecualikan)
-                </span>
+              {/* Item 4: Pemeriksaan Hari Kerja Efektif */}
+              <li className="flex items-start gap-2.5">
+                {workingDaysStatus === 'VALID' ? (
+                  <CheckCircle className="w-4 h-4 text-[#14532D] shrink-0 mt-0.5" />
+                ) : workingDaysStatus === 'INVALID' ? (
+                  <XCircle className="w-4 h-4 text-[#991B1B] shrink-0 mt-0.5" />
+                ) : (
+                  <Clock className="w-4 h-4 text-[#4A5565] shrink-0 mt-0.5" />
+                )}
+                <div className="leading-tight">
+                  <span className="font-semibold text-[#1B2430] block">Hari Kerja Efektif</span>
+                  <span
+                    className={
+                      workingDaysStatus === 'VALID'
+                        ? 'text-[#14532D] font-medium'
+                        : workingDaysStatus === 'INVALID'
+                        ? 'text-[#991B1B] font-semibold'
+                        : 'text-[#4A5565]'
+                    }
+                  >
+                    {workingDaysMessage}
+                  </span>
+                </div>
               </li>
             </ul>
           </div>
